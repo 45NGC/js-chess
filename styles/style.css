@@ -18,6 +18,21 @@ body {
 .cell {
 	width: 60px;
 	height: 60px;
+	position: relative;
+}
+
+.cell .overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 60px;
+	height: 60px;
+	/* transparent yellow */
+	background-color: rgba(255, 255, 0, 0.5);
+	/* Hidden by default*/
+	display: none;
+	pointer-events: none;
+	z-index: 1;
 }
 
 .white {
