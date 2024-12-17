@@ -1,26 +1,29 @@
 export class Game {
 	constructor() {
-		this.board = [];
-		this.pieces = [];
-		this.turn = "white";
+		this.turn = 1;
 	}
 
-	// Shows a transparent yellow square over the square the curor is in
 	handleMouseOver(event) {
-		const overlay = event.target.querySelector('.overlay');
-		if (overlay) {
-			overlay.style.display = 'block';
-
-			const squareId = event.currentTarget.id;
-			console.log(`Square ID: ${squareId}`);
-		}
+		const squareId = event.currentTarget.id;
+		//console.log(`Square ID: ${squareId}`);
 	}
 
-	// Once the cursor is not in the square, the transparent square disappears
-	handleMouseOut(event) {
-		const overlay = event.target.querySelector('.overlay');
-		if (overlay) {
-			overlay.style.display = 'none';
+	handleMouseClick(event) {
+		const squareId = event.currentTarget.id;
+		const square = document.getElementById(squareId)
+		const squareImage = square.getElementsByTagName('img')
+
+		console.log(`Square ID: ${squareId}`);
+
+		// Check if the clicked square has a piece in it
+		if (squareImage.length > 0) {
+
+			console.log(`There is a piece in this square`);
+
+			const squareImageId = squareImage[0].getAttribute('id');
+
+			const availableMoves = this.getAvailableMoves(squareImageId);
+			console.log(availableMoves);
 		}
 	}
 
@@ -31,15 +34,27 @@ export class Game {
 		// Add the events to all the board squares
 		divs.forEach(div => {
 			div.addEventListener('mouseover', this.handleMouseOver.bind(this));
-			div.addEventListener('mouseout', this.handleMouseOut.bind(this));
+			div.addEventListener('click', this.handleMouseClick.bind(this));
 		});
 	}
 
-	handleMove(start, end) {
+	getAvailableMoves(piece) {
+		switch (piece) {
+
+			case `w-king`:
+				console.log(`White king available moves :`);
+				break;
+
+
+			case `b-king`:
+				console.log(`Black king available moves :`);
+				break;
+
+		}
 
 	}
 
 	switchTurn() {
-		this.turn = this.turn === "white" ? "black" : "white";
+		this.turn = this.turn === 1 ? -1 : 1;
 	}
 }
