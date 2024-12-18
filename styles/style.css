@@ -44,11 +44,6 @@ body {
 	z-index: 1;
 }
 
-.cell:hover .overlay {
-	display: block;
-	/* Mostrar el overlay al pasar el ratón */
-}
-
 .white {
 	background-color: #eeeed5;
 }
