@@ -42,6 +42,19 @@ export class Game {
 		];
 	}
 
+	startGame() {
+		console.log(`CHESS GAME STARTED`);
+		const divs = document.querySelectorAll('.cell');
+
+		// Add the events to all the board squares
+		divs.forEach(div => {
+			div.addEventListener('mouseover', this.handleMouseOver.bind(this));
+			div.addEventListener('click', this.handleMouseClick.bind(this));
+		});
+
+		this.renderBoard();
+	}
+
 	renderBoard() {
 		const cells = document.querySelectorAll(".cell");
 		cells.forEach(cell => {
@@ -52,7 +65,7 @@ export class Game {
 			for (let col = 0; col < this.board[row].length; col++) {
 				const piece = this.board[row][col];
 				if (piece !== 0) {
-					const pieceImage = PIECE_MAP[piece.toString()]; // Convertir a string
+					const pieceImage = PIECE_MAP[piece.toString()];
 					const cellId = `square-${row}-${col}`;
 					const cell = document.getElementById(cellId);
 
@@ -94,25 +107,13 @@ export class Game {
 		if (squareImage) {
 
 			const squareImageId = squareImage.getAttribute('id');
-			const availableMoves = this.getAvailableMoves(squareImageId);
+			const availableMoves = this.getPieceAvailableMoves(squareImageId);
 			//console.log(availableMoves);
 		}
 	}
 
-	startGame() {
-		console.log(`CHESS GAME STARTED`);
-		const divs = document.querySelectorAll('.cell');
 
-		// Add the events to all the board squares
-		divs.forEach(div => {
-			div.addEventListener('mouseover', this.handleMouseOver.bind(this));
-			div.addEventListener('click', this.handleMouseClick.bind(this));
-		});
-
-		this.renderBoard();
-	}
-
-	getAvailableMoves(piece) {
+	getPieceAvailableMoves(piece) {
 		switch (piece) {
 
 			// WHITE PIECES
@@ -165,12 +166,27 @@ export class Game {
 			case `b_pawn`:
 				console.log(`Black pawn available moves :`);
 				break;
-
-
-
-
 		}
 
+	}
+
+	getAllAvailableMoves(board, turn) {
+
+	}
+
+	getKingSquare(board, turn) {
+
+		const king = turn === 1 ? 7 : -7;
+
+		for (let row = 0; row < board.length; row++) {
+
+			for (let col = 0; col < board[row].length; col++) {
+
+				if (board[row][col] === king) {
+					return [row, col];
+				}
+			}
+		}
 	}
 
 	switchTurn() {
