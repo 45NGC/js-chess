@@ -1,5 +1,7 @@
 'use strict'
 
+import { Pieces } from "./pieces.js";
+
 const PIECE_MAP = {
 	'1': `w_pawn.png`,
 	'2': `w_knight.png`,
@@ -30,6 +32,19 @@ export class Game {
 		// Rook 				= 4 / -4	5 / -5	(short-castle	long-castle)  6/-6 (promoted rook)
 		// King 				= 7 / -7
 		// Queen				= 8 / -8
+		// En passant squares   = 9 / -9
+		//
+		// Example of board after a pawn push :
+		//
+		// 	[-5, -2, -3, -8, -7, -3, -2, -4],
+		// 	[-1, -1, -1, -1, -1, -1, -1, -1],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 1, 0, 0],
+		// 	[0, 0, 0, 0, 0, 9, 0, 0],
+		// 	[1, 1, 1, 1, 1, 0, 1, 1],
+		// 	[5, 2, 3, 8, 7, 3, 2, 4],
+
 		this.board = [
 			[-5, -2, -3, -8, -7, -3, -2, -4],
 			[-1, -1, -1, -1, -1, -1, -1, -1],
@@ -40,6 +55,8 @@ export class Game {
 			[1, 1, 1, 0, 0, 0, 1, 1],
 			[5, 2, 3, 8, 7, 3, 2, 4],
 		];
+
+		this.pieces = new Pieces();
 	}
 
 	startGame() {
@@ -113,58 +130,82 @@ export class Game {
 	}
 
 
-	getPieceAvailableMoves(piece) {
+	getPieceAvailableMoves(piece, includeAttackedSquares) {
 		switch (piece) {
 
 			// WHITE PIECES
 			case `w_king`:
-				console.log(`White king available moves :`);
+				if (this.turn === 1) {
+					this.pieces.kingAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `w_queen`:
-				console.log(`White queen available moves :`);
+				if (this.turn === 1) {
+					this.pieces.kingAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `w_rook`:
-				console.log(`White rook available moves :`);
+				if (this.turn === 1) {
+					this.pieces.rookAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `w_bishop`:
-				console.log(`White bishop available moves :`);
+				if (this.turn === 1) {
+					this.pieces.bishopAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `w_knight`:
-				console.log(`White knight available moves :`);
+				if (this.turn === 1) {
+					this.pieces.knightAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `w_pawn`:
-				console.log(`White pawn available moves :`);
+				if (this.turn === 1) {
+					this.pieces.pawnAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 
 			// BLACK PIECES
 			case `b_king`:
-				console.log(`Black king available moves :`);
+				if (this.turn === -1) {
+					this.pieces.kingAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `b_queen`:
-				console.log(`Black queen available moves :`);
+				if (this.turn === -1) {
+					this.pieces.queenAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `b_rook`:
-				console.log(`Black rook available moves :`);
+				if (this.turn === -1) {
+					this.pieces.rookAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `b_bishop`:
-				console.log(`Black bishop available moves :`);
+				if (this.turn === -1) {
+					this.pieces.bishopAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `b_knight`:
-				console.log(`Black knight available moves :`);
+				if (this.turn === -1) {
+					this.pieces.knightAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 
 			case `b_pawn`:
-				console.log(`Black pawn available moves :`);
+				if (this.turn === -1) {
+					this.pieces.pawnAvailableSquares(this.board, this.turn, includeAttackedSquares);
+				}
 				break;
 		}
 
@@ -172,21 +213,6 @@ export class Game {
 
 	getAllAvailableMoves(board, turn) {
 
-	}
-
-	getKingSquare(board, turn) {
-
-		const king = turn === 1 ? 7 : -7;
-
-		for (let row = 0; row < board.length; row++) {
-
-			for (let col = 0; col < board[row].length; col++) {
-
-				if (board[row][col] === king) {
-					return [row, col];
-				}
-			}
-		}
 	}
 
 	switchTurn() {
