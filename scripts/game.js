@@ -142,7 +142,7 @@ export class Game {
 
 			case `w_queen`:
 				if (this.turn === 1) {
-					this.pieces.kingAvailableSquares(this.board, this.turn, includeAttackedSquares);
+					this.pieces.queenAvailableSquares(this.board, this.turn, includeAttackedSquares);
 				}
 				break;
 
