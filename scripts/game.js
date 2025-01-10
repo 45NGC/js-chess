@@ -52,11 +52,9 @@ export class Game {
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
-			[1, 1, 1, 0, 0, 0, 1, 1],
-			[5, 2, 3, 8, 7, 3, 2, 4],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[5, 2, 3, 0, 7, 0, 2, 4],
 		];
-
-		this.pieces = new Pieces();
 	}
 
 	startGame() {
@@ -124,89 +122,77 @@ export class Game {
 		if (squareImage) {
 
 			const squareImageId = squareImage.getAttribute('id');
-			const availableMoves = this.getPieceAvailableMoves(squareImageId);
-			//console.log(availableMoves);
+			const pieceAvailableMoves = this.getPieceAvailableMoves(squareImageId, false);
+			const pieceAttackedSquares = this.getPieceAvailableMoves(squareImageId, true);
+			console.log(`Piece available moves :`);
+			console.log(pieceAvailableMoves);
+			console.log(`Piece attacked squares :`);
+			console.log(pieceAttackedSquares);
+
 		}
 	}
 
 
-	getPieceAvailableMoves(piece, includeAttackedSquares) {
-		switch (piece) {
+	getPieceAvailableMoves(piece, getAttackedSquares) {
 
-			// WHITE PIECES
-			case `w_king`:
-				if (this.turn === 1) {
-					this.pieces.kingAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+		const pieces = new Pieces(this.turn, this.board);
 
-			case `w_queen`:
-				if (this.turn === 1) {
-					this.pieces.queenAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+		if (this.turn === 1) {
+			switch (piece) {
 
-			case `w_rook`:
-				if (this.turn === 1) {
-					this.pieces.rookAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				// WHITE PIECES
+				case `w_king`:
+					return pieces.kingAvailableSquares(getAttackedSquares);
 
-			case `w_bishop`:
-				if (this.turn === 1) {
-					this.pieces.bishopAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				case `w_queen`:
+					this.pieces.queenAvailableSquares(getAttackedSquares);
+					break;
 
-			case `w_knight`:
-				if (this.turn === 1) {
-					this.pieces.knightAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				case `w_rook`:
+					this.pieces.rookAvailableSquares(getAttackedSquares);
+					break;
 
-			case `w_pawn`:
-				if (this.turn === 1) {
-					this.pieces.pawnAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				case `w_bishop`:
+					this.pieces.bishopAvailableSquares(getAttackedSquares);
+					break;
 
+				case `w_knight`:
+					this.pieces.knightAvailableSquares(getAttackedSquares);
+					break;
 
-			// BLACK PIECES
-			case `b_king`:
-				if (this.turn === -1) {
-					this.pieces.kingAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				case `w_pawn`:
+					this.pieces.pawnAvailableSquares(getAttackedSquares);
+					break;
+			}
 
-			case `b_queen`:
-				if (this.turn === -1) {
-					this.pieces.queenAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+		} else {
+			switch (piece) {
 
-			case `b_rook`:
-				if (this.turn === -1) {
-					this.pieces.rookAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				// BLACK PIECES
+				case `b_king`:
+					this.pieces.kingAvailableSquares(getAttackedSquares);
+					break;
 
-			case `b_bishop`:
-				if (this.turn === -1) {
-					this.pieces.bishopAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				case `b_queen`:
+					this.pieces.queenAvailableSquares(getAttackedSquares);
+					break;
 
-			case `b_knight`:
-				if (this.turn === -1) {
-					this.pieces.knightAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				case `b_rook`:
+					this.pieces.rookAvailableSquares(getAttackedSquares);
+					break;
 
-			case `b_pawn`:
-				if (this.turn === -1) {
-					this.pieces.pawnAvailableSquares(this.board, this.turn, includeAttackedSquares);
-				}
-				break;
+				case `b_bishop`:
+					this.pieces.bishopAvailableSquares(getAttackedSquares);
+					break;
+
+				case `b_knight`:
+					this.pieces.knightAvailableSquares(getAttackedSquares);
+					break;
+
+				case `b_pawn`:
+					this.pieces.pawnAvailableSquares(getAttackedSquares);
+					break;
+			}
 		}
 
 	}
