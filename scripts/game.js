@@ -51,8 +51,8 @@ export class Game {
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[1, 1, 1, 1, 1, 1, 1, 1],
+			[0, 0, 0, 0, 1, 0, 0, 0],
+			[1, 1, 1, 1, 0, 1, 1, 1],
 			[5, 2, 3, 0, 7, 0, 2, 4],
 		];
 	}
@@ -103,11 +103,10 @@ export class Game {
 
 	handleMouseClick(event) {
 
-		// hide active overlays
-		const overlays = document.querySelectorAll('.overlay');
-		overlays.forEach(overlay => {
-			overlay.style.display = 'none';
-		});
+		// hide active overlays and circles
+
+		this.hideElements(`.circle`);
+		this.hideElements(`.overlay`);
 
 		// show an overlay over the targeted square
 		const clickedSquare = event.currentTarget;
@@ -123,13 +122,47 @@ export class Game {
 
 			const squareImageId = squareImage.getAttribute('id');
 			const pieceAvailableMoves = this.getPieceAvailableMoves(squareImageId, false);
-			const pieceAttackedSquares = this.getPieceAvailableMoves(squareImageId, true);
-			console.log(`Piece available moves :`);
+			// const pieceAttackedSquares = this.getPieceAvailableMoves(squareImageId, true);
+			// console.log(`Piece available moves :`);
 			console.log(pieceAvailableMoves);
-			console.log(`Piece attacked squares :`);
-			console.log(pieceAttackedSquares);
+			// console.log(`Piece attacked squares :`);
+			// console.log(pieceAttackedSquares);
+
+			this.showAvailableSquares(pieceAvailableMoves);
 
 		}
+	}
+
+	showAvailableSquares(coordinatesArray) {
+
+		coordinatesArray.forEach(([row, col]) => {
+
+			const cellId = `square-${row}-${col}`;
+			const cell = document.getElementById(cellId);
+
+			if (cell) {
+
+				// delete all posible previous circles
+				cell.querySelectorAll('.circle').forEach(circle => circle.remove());
+
+				const circle = document.createElement('div');
+				circle.classList.add('circle');
+
+				cell.appendChild(circle);
+
+			} else {
+				console.warn(`square not found ID: ${cellId}`);
+			}
+		});
+	}
+
+	hideElements(selector) {
+
+		const elements = document.querySelectorAll(selector);
+
+		elements.forEach(element => {
+			element.style.display = 'none';
+		});
 	}
 
 
@@ -145,24 +178,19 @@ export class Game {
 					return pieces.kingAvailableSquares(getAttackedSquares);
 
 				case `w_queen`:
-					this.pieces.queenAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.queenAvailableSquares(getAttackedSquares);
 
 				case `w_rook`:
-					this.pieces.rookAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.rookAvailableSquares(getAttackedSquares);
 
 				case `w_bishop`:
-					this.pieces.bishopAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.bishopAvailableSquares(getAttackedSquares);
 
 				case `w_knight`:
-					this.pieces.knightAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.knightAvailableSquares(getAttackedSquares);
 
 				case `w_pawn`:
-					this.pieces.pawnAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.pawnAvailableSquares(getAttackedSquares);
 			}
 
 		} else {
@@ -170,28 +198,22 @@ export class Game {
 
 				// BLACK PIECES
 				case `b_king`:
-					this.pieces.kingAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.kingAvailableSquares(getAttackedSquares);
 
 				case `b_queen`:
-					this.pieces.queenAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.queenAvailableSquares(getAttackedSquares);
 
 				case `b_rook`:
-					this.pieces.rookAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.rookAvailableSquares(getAttackedSquares);
 
 				case `b_bishop`:
-					this.pieces.bishopAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.bishopAvailableSquares(getAttackedSquares);
 
 				case `b_knight`:
-					this.pieces.knightAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.knightAvailableSquares(getAttackedSquares);
 
 				case `b_pawn`:
-					this.pieces.pawnAvailableSquares(getAttackedSquares);
-					break;
+					return pieces.pawnAvailableSquares(getAttackedSquares);
 			}
 		}
 

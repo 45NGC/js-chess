@@ -18,6 +18,8 @@ export class Pieces {
 
 	kingAvailableSquares(getAttackedSquares) {
 
+		//this.availableSquares = [];
+
 		for (const [rowMove, colMove] of this.kingMoves) {
 			const targetRow = this.kingSquare[0] + rowMove;
 			const targetCol = this.kingSquare[1] + colMove;
@@ -44,27 +46,27 @@ export class Pieces {
 
 	rookAvailableSquares(getAttackedSquares) {
 		console.log(`Rook squares`);
-
+		return [];
 	}
 
 	bishopAvailableSquares(getAttackedSquares) {
 		console.log(`Bishop squares`);
-
+		return [];
 	}
 
 	knightAvailableSquares(getAttackedSquares) {
 		console.log(`Knight squares`);
-
+		return [];
 	}
 
 	pawnAvailableSquares(getAttackedSquares) {
 		console.log(`Pawn squares`);
-
+		return [];
 	}
 
 	queenAvailableSquares(getAttackedSquares) {
 		console.log(`Queen squares`);
-
+		return [];
 	}
 
 

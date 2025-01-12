@@ -51,3 +51,15 @@ body {
 .black {
 	background-color: #7d945d;
 }
+
+.circle {
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	background-color: rgba(75, 75, 75, 0.8);
+	border-radius: 50%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 2;
+}
