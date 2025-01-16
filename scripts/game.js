@@ -1,25 +1,6 @@
 'use strict'
 
-import { Pieces } from "./pieces.js";
-
-const PIECE_MAP = {
-	'1': `w_pawn.png`,
-	'2': `w_knight.png`,
-	'3': `w_bishop.png`,
-	'4': `w_rook.png`,
-	'5': `w_rook.png`,
-	'6': `w_rook.png`,
-	'7': `w_king.png`,
-	'8': `w_queen.png`,
-	'-1': `b_pawn.png`,
-	'-2': `b_knight.png`,
-	'-3': `b_bishop.png`,
-	'-4': `b_rook.png`,
-	'-5': `b_rook.png`,
-	'-6': `b_rook.png`,
-	'-7': `b_king.png`,
-	'-8': `b_queen.png`
-};
+import { Pieces, PIECE_MAP } from "./pieces.js";
 
 export class Game {
 	constructor() {
@@ -80,7 +61,7 @@ export class Game {
 			for (let col = 0; col < this.board[row].length; col++) {
 				const piece = this.board[row][col];
 				if (piece !== 0) {
-					const pieceImage = PIECE_MAP[piece.toString()];
+					const pieceImage = PIECE_MAP[piece.toString()] + `.png`;
 					const cellId = `square-${row}-${col}`;
 					const cell = document.getElementById(cellId);
 
@@ -120,16 +101,14 @@ export class Game {
 		const squareImage = clickedSquare.querySelector('img');
 		if (squareImage) {
 
+			const pieces = new Pieces(this.board, this.turn);
 			const squareImageId = squareImage.getAttribute('id');
-			const pieceAvailableMoves = this.getPieceAvailableMoves(squareImageId, false);
-			// const pieceAttackedSquares = this.getPieceAvailableMoves(squareImageId, true);
-			// console.log(`Piece available moves :`);
+			const pieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
+
+			const pieceAvailableMoves = pieces.getPieceAvailableMoves(squareImageId, pieceSquare, false);
+
 			console.log(pieceAvailableMoves);
-			// console.log(`Piece attacked squares :`);
-			// console.log(pieceAttackedSquares);
-
 			this.showAvailableSquares(pieceAvailableMoves);
-
 		}
 	}
 
@@ -163,60 +142,6 @@ export class Game {
 		elements.forEach(element => {
 			element.style.display = 'none';
 		});
-	}
-
-
-	getPieceAvailableMoves(piece, getAttackedSquares) {
-
-		const pieces = new Pieces(this.turn, this.board);
-
-		if (this.turn === 1) {
-			switch (piece) {
-
-				// WHITE PIECES
-				case `w_king`:
-					return pieces.kingAvailableSquares(getAttackedSquares);
-
-				case `w_queen`:
-					return pieces.queenAvailableSquares(getAttackedSquares);
-
-				case `w_rook`:
-					return pieces.rookAvailableSquares(getAttackedSquares);
-
-				case `w_bishop`:
-					return pieces.bishopAvailableSquares(getAttackedSquares);
-
-				case `w_knight`:
-					return pieces.knightAvailableSquares(getAttackedSquares);
-
-				case `w_pawn`:
-					return pieces.pawnAvailableSquares(getAttackedSquares);
-			}
-
-		} else {
-			switch (piece) {
-
-				// BLACK PIECES
-				case `b_king`:
-					return pieces.kingAvailableSquares(getAttackedSquares);
-
-				case `b_queen`:
-					return pieces.queenAvailableSquares(getAttackedSquares);
-
-				case `b_rook`:
-					return pieces.rookAvailableSquares(getAttackedSquares);
-
-				case `b_bishop`:
-					return pieces.bishopAvailableSquares(getAttackedSquares);
-
-				case `b_knight`:
-					return pieces.knightAvailableSquares(getAttackedSquares);
-
-				case `b_pawn`:
-					return pieces.pawnAvailableSquares(getAttackedSquares);
-			}
-		}
-
 	}
 
 	getAllAvailableMoves(board, turn) {
