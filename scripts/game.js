@@ -27,14 +27,14 @@ export class Game {
 		// 	[5, 2, 3, 8, 7, 3, 2, 4],
 
 		this.board = [
-			[-5, -2, -3, -8, -7, -3, -2, -4],
+			[-5, -2, -3, -8, 0, -3, -2, -4],
 			[-1, -1, -1, -1, -1, -1, -1, -1],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, -7, 0],
 			[0, 0, 0, 0, 1, 0, 0, 0],
-			[1, 1, 1, 1, 0, 1, 1, 1],
-			[5, 2, 3, 0, 7, 0, 2, 4],
+			[1, 1, 1, 1, 7, 1, 1, 1],
+			[5, 2, 3, 0, 0, 0, 2, 4],
 		];
 	}
 
@@ -111,7 +111,7 @@ export class Game {
 				const pieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
 				const pieceAvailableMoves = pieces.getPieceAvailableMoves(squareImageId, pieceSquare, false);
 
-				console.log(pieceAvailableMoves);
+				console.log(`PIECE AVAILABLE MOVES : ${pieceAvailableMoves.toString()}`);
 				this.showAvailableSquares(pieceAvailableMoves);
 			}
 

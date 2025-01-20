@@ -104,7 +104,8 @@ export class Pieces {
 			if (this.squareIsWithinBoard(targetRow, targetCol)) {
 				const targetSquare = this.board[targetRow][targetCol];
 
-				if (!opponentAttackedSquares.includes(targetSquare)) {
+
+				if (!this.isSquareAttackedByOpponent(targetRow, targetCol, opponentAttackedSquares)) {
 
 					// if the square does not have one of players pieces and it is not under attack
 					// it is available (it is 0 or an  undefended opponent piece)
@@ -139,27 +140,27 @@ export class Pieces {
 	}
 
 	rookAvailableSquares(square) {
-		console.log(`Rook squares`);
+		//console.log(`Rook squares`);
 		return [];
 	}
 
 	bishopAvailableSquares(square) {
-		console.log(`Bishop squares`);
+		//console.log(`Bishop squares`);
 		return [];
 	}
 
 	knightAvailableSquares(square) {
-		console.log(`Knight squares`);
+		//console.log(`Knight squares`);
 		return [];
 	}
 
 	pawnAvailableSquares(square) {
-		console.log(`Pawn squares`);
+		//console.log(`Pawn squares`);
 		return [];
 	}
 
 	queenAvailableSquares(square) {
-		console.log(`Queen squares`);
+		//console.log(`Queen squares`);
 		return [];
 	}
 
@@ -205,6 +206,29 @@ export class Pieces {
 		console.log(opponentAttackedSquares);
 		return opponentAttackedSquares;
 	}
+
+	isSquareAttackedByOpponent(row, col, opponentAttackedSquares) {
+		return opponentAttackedSquares.some(attackedSquares =>
+			attackedSquares.some(([attackedRow, attackedCol]) =>
+				attackedRow === row && attackedCol === col
+			)
+		);
+	}
+
+	//TODO:
+	// implement this function to delete isSquareAttackedByOpponent
+	//
+	// flattenOneLevel(nestedArray) {
+	// 	return nestedArray.reduce((acc, item) => {
+	// 		if (Array.isArray(item[0])) {
+	// 			acc.push(...item); // Aplana y añade cada elemento individual.
+	// 		} else {
+	// 			acc.push(item); // Añade directamente el subarray.
+	// 		}
+	// 		return acc;
+	// 	}, []);
+	// }
+
 
 	getPlayerPieces(turn) {
 		return turn === 1 ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [-1, -2, -3, -4, -5, -6, -7, -8, -9];
