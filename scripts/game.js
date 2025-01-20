@@ -103,12 +103,18 @@ export class Game {
 
 			const pieces = new Pieces(this.board, this.turn);
 			const squareImageId = squareImage.getAttribute('id');
-			const pieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
 
-			const pieceAvailableMoves = pieces.getPieceAvailableMoves(squareImageId, pieceSquare, false);
+			// Only calls 'getPieceAvailableMoves' if the selected piece is of the corresponding color
+			// (if turn = 1 only white pieces can move and if turn = -1 only the black pieces can move)
+			if (pieces.playerPieces.includes(pieces.getKeyByValue(PIECE_MAP, squareImageId))) {
 
-			console.log(pieceAvailableMoves);
-			this.showAvailableSquares(pieceAvailableMoves);
+				const pieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
+				const pieceAvailableMoves = pieces.getPieceAvailableMoves(squareImageId, pieceSquare, false);
+
+				console.log(pieceAvailableMoves);
+				this.showAvailableSquares(pieceAvailableMoves);
+			}
+
 		}
 	}
 

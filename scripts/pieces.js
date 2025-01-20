@@ -30,8 +30,10 @@ export class Pieces {
 		//this.kingSquare = this.getKingSquare(board, turn);
 	}
 
-	availableSquares = [];
-	kingMoves = [[1, 0], [1, -1], [1, 1], [0, 1], [0, -1], [-1, 0], [-1, -1], [-1, 1]]
+	// availableSquares = [];
+	// attackedSquares = [];
+
+	kingMoves = [[1, 0], [1, -1], [1, 1], [0, 1], [0, -1], [-1, 0], [-1, -1], [-1, 1]];
 
 	getPieceAvailableMoves(piece, square, getAttackedSquares) {
 
@@ -39,41 +41,49 @@ export class Pieces {
 
 			// WHITE PIECES
 			case `w_king`:
-				return this.kingAvailableSquares(square, getAttackedSquares);
+				if (getAttackedSquares) {
+					return this.kingAttackedSquares(square);
+				} else {
+					return this.kingAvailableSquares(square);
+				}
 
 			case `w_queen`:
-				return this.queenAvailableSquares(square, getAttackedSquares);
+				return this.queenAvailableSquares(square);
 
 			case `w_rook`:
-				return this.rookAvailableSquares(square, getAttackedSquares);
+				return this.rookAvailableSquares(square);
 
 			case `w_bishop`:
-				return this.bishopAvailableSquares(square, getAttackedSquares);
+				return this.bishopAvailableSquares(square);
 
 			case `w_knight`:
-				return this.knightAvailableSquares(square, getAttackedSquares);
+				return this.knightAvailableSquares(square);
 
 			case `w_pawn`:
-				return this.pawnAvailableSquares(square, getAttackedSquares);
+				return this.pawnAvailableSquares(square);
 
 			// BLACK PIECES
 			case `b_king`:
-				return this.kingAvailableSquares(square, getAttackedSquares);
+				if (getAttackedSquares) {
+					return this.kingAttackedSquares(square);
+				} else {
+					return this.kingAvailableSquares(square);
+				}
 
 			case `b_queen`:
-				return this.queenAvailableSquares(square, getAttackedSquares);
+				return this.queenAvailableSquares(square);
 
 			case `b_rook`:
-				return this.rookAvailableSquares(square, getAttackedSquares);
+				return this.rookAvailableSquares(square);
 
 			case `b_bishop`:
-				return this.bishopAvailableSquares(square, getAttackedSquares);
+				return this.bishopAvailableSquares(square);
 
 			case `b_knight`:
-				return this.knightAvailableSquares(square, getAttackedSquares);
+				return this.knightAvailableSquares(square);
 
 			case `b_pawn`:
-				return this.pawnAvailableSquares(square, getAttackedSquares);
+				return this.pawnAvailableSquares(square);
 
 		}
 
@@ -81,69 +91,74 @@ export class Pieces {
 
 	// PIECE METHODS :
 
-	kingAvailableSquares(square, getAttackedSquares) {
+	kingAvailableSquares(square) {
 
-		if (!getAttackedSquares) {
-			const opponentAttackedSquares = this.getOpponentAttackedSquares(this.board);
+		const availableSquares = [];
 
-			for (const [rowMove, colMove] of this.kingMoves) {
-				const targetRow = square[0] + rowMove;
-				const targetCol = square[1] + colMove;
+		const opponentAttackedSquares = this.getOpponentAttackedSquares(this.board);
 
-				if (this.squareIsWithinBoard(targetRow, targetCol)) {
-					const targetSquare = this.board[targetRow][targetCol];
+		for (const [rowMove, colMove] of this.kingMoves) {
+			const targetRow = square[0] + rowMove;
+			const targetCol = square[1] + colMove;
 
-					// if the square does not have one of players pieces it is available (it is 0 or an opponent piece)
-					if (!opponentAttackedSquares.includes(targetSquare)) {
+			if (this.squareIsWithinBoard(targetRow, targetCol)) {
+				const targetSquare = this.board[targetRow][targetCol];
 
-						if (!this.playerPieces.includes(targetSquare)) {
-							this.availableSquares.push([targetRow, targetCol]);
-						}
+				if (!opponentAttackedSquares.includes(targetSquare)) {
+
+					// if the square does not have one of players pieces and it is not under attack
+					// it is available (it is 0 or an  undefended opponent piece)
+					if (!this.playerPieces.includes(targetSquare)) {
+						availableSquares.push([targetRow, targetCol]);
 					}
-
 				}
-			}
-		} else {
 
-			for (const [rowMove, colMove] of this.kingMoves) {
-				const targetRow = square[0] + rowMove;
-				const targetCol = square[1] + colMove;
-
-				if (this.squareIsWithinBoard(targetRow, targetCol)) {
-					// in case that we only want the attacked squares we do not need 
-					// to check if the target square is empty or if its has a piece in it
-
-					this.availableSquares.push([targetRow, targetCol]);
-				}
 			}
 		}
 
-
-
-		return this.availableSquares;
+		return availableSquares;
 	}
 
-	rookAvailableSquares(square, getAttackedSquares) {
+	kingAttackedSquares(square) {
+
+		const attackedSquares = [];
+
+		for (const [rowMove, colMove] of this.kingMoves) {
+			const targetRow = square[0] + rowMove;
+			const targetCol = square[1] + colMove;
+
+			if (this.squareIsWithinBoard(targetRow, targetCol)) {
+				// in case that we only want the attacked squares we do not need 
+				// to check if the target square is empty or if its has a piece in it
+
+				attackedSquares.push([targetRow, targetCol]);
+			}
+		}
+
+		return attackedSquares;
+	}
+
+	rookAvailableSquares(square) {
 		console.log(`Rook squares`);
 		return [];
 	}
 
-	bishopAvailableSquares(square, getAttackedSquares) {
+	bishopAvailableSquares(square) {
 		console.log(`Bishop squares`);
 		return [];
 	}
 
-	knightAvailableSquares(square, getAttackedSquares) {
+	knightAvailableSquares(square) {
 		console.log(`Knight squares`);
 		return [];
 	}
 
-	pawnAvailableSquares(square, getAttackedSquares) {
+	pawnAvailableSquares(square) {
 		console.log(`Pawn squares`);
 		return [];
 	}
 
-	queenAvailableSquares(square, getAttackedSquares) {
+	queenAvailableSquares(square) {
 		console.log(`Queen squares`);
 		return [];
 	}
@@ -202,5 +217,15 @@ export class Pieces {
 	// In case any move is made we delete the available en passant squares because they only last one turn
 	deleteEnPassantSquares(board) {
 
+	}
+
+	// Retrieves the key corresponding to a given value in the provided map
+	getKeyByValue(map, value) {
+		for (const [key, val] of Object.entries(map)) {
+			if (val === value) {
+				return parseInt(key, 10);
+			}
+		}
+		return null;
 	}
 }
