@@ -257,10 +257,6 @@ export class Pieces {
 		return turn === 1 ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [-1, -2, -3, -4, -5, -6, -7, -8, -9];
 	}
 
-	squareIsWithinBoard(row, col) {
-		return row >= 0 && row < this.board.length && col >= 0 && col < this.board[0].length;
-	}
-
 	// In case any move is made we delete the available en passant squares because they only last one turn
 	deleteEnPassantSquares(board) {
 
