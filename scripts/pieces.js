@@ -26,12 +26,7 @@ export class Pieces {
 		this.turn = turn;
 		this.playerPieces = this.getPlayerPieces(turn);
 		this.opponentPieces = this.getPlayerPieces(-turn);
-		//this.opponentAttackedSquares = this.getOpponentAttackedSquares(board, turn);
-		//this.kingSquare = this.getKingSquare(board, turn);
 	}
-
-	// availableSquares = [];
-	// attackedSquares = [];
 
 	kingMoves = [[1, 0], [1, -1], [1, 1], [0, 1], [0, -1], [-1, 0], [-1, -1], [-1, 1]];
 
@@ -60,7 +55,11 @@ export class Pieces {
 				return this.knightAvailableSquares(square);
 
 			case `w_pawn`:
-				return this.pawnAvailableSquares(square);
+				if (getAttackedSquares) {
+					return this.pawnAttackedSquares(square);
+				} else {
+					return this.pawnAvailableSquares(square);
+				}
 
 			// BLACK PIECES
 			case `b_king`:
@@ -83,8 +82,11 @@ export class Pieces {
 				return this.knightAvailableSquares(square);
 
 			case `b_pawn`:
-				return this.pawnAvailableSquares(square);
-
+				if (getAttackedSquares) {
+					return this.pawnAttackedSquares(square);
+				} else {
+					return this.pawnAvailableSquares(square);
+				}
 		}
 
 	}
@@ -94,26 +96,21 @@ export class Pieces {
 	kingAvailableSquares(square) {
 
 		const availableSquares = [];
-
 		const opponentAttackedSquares = this.getOpponentAttackedSquares(this.board);
 
 		for (const [rowMove, colMove] of this.kingMoves) {
 			const targetRow = square[0] + rowMove;
 			const targetCol = square[1] + colMove;
 
-			if (this.squareIsWithinBoard(targetRow, targetCol)) {
-				const targetSquare = this.board[targetRow][targetCol];
+			const targetSquare = this.board[targetRow]?.[targetCol];
 
+			if (targetSquare !== undefined && !this.isSquareAttackedByOpponent(targetRow, targetCol, opponentAttackedSquares)) {
 
-				if (!this.isSquareAttackedByOpponent(targetRow, targetCol, opponentAttackedSquares)) {
-
-					// if the square does not have one of players pieces and it is not under attack
-					// it is available (it is 0 or an  undefended opponent piece)
-					if (!this.playerPieces.includes(targetSquare)) {
-						availableSquares.push([targetRow, targetCol]);
-					}
+				// if the square does not have one of players pieces and it is not under attack
+				// it is available (it is 0 or an  undefended opponent piece)
+				if (!this.playerPieces.includes(targetSquare)) {
+					availableSquares.push([targetRow, targetCol]);
 				}
-
 			}
 		}
 
@@ -128,10 +125,9 @@ export class Pieces {
 			const targetRow = square[0] + rowMove;
 			const targetCol = square[1] + colMove;
 
-			if (this.squareIsWithinBoard(targetRow, targetCol)) {
-				// in case that we only want the attacked squares we do not need 
-				// to check if the target square is empty or if its has a piece in it
-
+			// in case that we only want the attacked squares we do not need 
+			// to check if the target square is empty or if its has a piece in it
+			if (this.board[targetRow]?.[targetCol] !== undefined) {
 				attackedSquares.push([targetRow, targetCol]);
 			}
 		}
@@ -155,8 +151,50 @@ export class Pieces {
 	}
 
 	pawnAvailableSquares(square) {
-		//console.log(`Pawn squares`);
-		return [];
+		const availableSquares = [];
+		const [row, col] = square;
+
+		// Helper function to check and add a square if it is valid
+		const addSquareIfValid = (targetRow, targetCol, condition) => {
+			if (this.board[targetRow]?.[targetCol] !== undefined && condition) {
+				availableSquares.push([targetRow, targetCol]);
+			}
+		};
+
+		const isInitialRow = (row === 1 && this.turn === -1) || (row === 6 && this.turn === 1);
+		const forwardMove = row - this.turn;
+		const doubleForwardMove = row - this.turn * 2;
+
+		// First push
+		if (isInitialRow && this.board[doubleForwardMove]?.[col] === 0) {
+			addSquareIfValid(doubleForwardMove, col, true);
+		}
+
+		// Normal push
+		addSquareIfValid(forwardMove, col, this.board[forwardMove]?.[col] === 0);
+
+		// Capture
+		[-1, 1].forEach(offset => {
+			const targetCol = col + offset;
+			addSquareIfValid(forwardMove, targetCol, this.opponentPieces.includes(this.board[forwardMove]?.[targetCol]));
+		});
+
+		return availableSquares;
+	}
+
+	pawnAttackedSquares(square) {
+		const attackedSquares = [];
+
+		for (const colMove of [-1, 1]) {
+			const targetRow = square[0] + this.turn;
+			const targetCol = square[1] + colMove;
+
+			if (this.board[targetRow]?.[targetCol] !== undefined) {
+				attackedSquares.push([targetRow, targetCol]);
+			}
+		}
+
+		return attackedSquares;
 	}
 
 	queenAvailableSquares(square) {
@@ -214,21 +252,6 @@ export class Pieces {
 			)
 		);
 	}
-
-	//TODO:
-	// implement this function to delete isSquareAttackedByOpponent
-	//
-	// flattenOneLevel(nestedArray) {
-	// 	return nestedArray.reduce((acc, item) => {
-	// 		if (Array.isArray(item[0])) {
-	// 			acc.push(...item); // Aplana y añade cada elemento individual.
-	// 		} else {
-	// 			acc.push(item); // Añade directamente el subarray.
-	// 		}
-	// 		return acc;
-	// 	}, []);
-	// }
-
 
 	getPlayerPieces(turn) {
 		return turn === 1 ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [-1, -2, -3, -4, -5, -6, -7, -8, -9];
