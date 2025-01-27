@@ -28,7 +28,14 @@ export class Pieces {
 		this.opponentPieces = this.getPlayerPieces(-turn);
 	}
 
-	kingMoves = [[1, 0], [1, -1], [1, 1], [0, 1], [0, -1], [-1, 0], [-1, -1], [-1, 1]];
+	kingMoves = [
+		[0, 1], [1, 0], [-1, -1], [-1, 1],
+		[-1, 0], [1, -1], [1, 1], [0, -1]
+	];
+	knightMoves = [
+		[2, 1], [2, -1], [-2, 1], [-2, -1],
+		[1, 2], [1, -2], [-1, 2], [-1, -2]
+	];
 
 	getPieceAvailableMoves(piece, square, getAttackedSquares) {
 
@@ -52,7 +59,12 @@ export class Pieces {
 				return this.bishopAvailableSquares(square);
 
 			case `w_knight`:
-				return this.knightAvailableSquares(square);
+				if (getAttackedSquares) {
+					return this.pawnAvailableSquares(square);
+				} else {
+					return this.knightAvailableSquares(square);
+				}
+
 
 			case `w_pawn`:
 				if (getAttackedSquares) {
@@ -146,8 +158,43 @@ export class Pieces {
 	}
 
 	knightAvailableSquares(square) {
-		//console.log(`Knight squares`);
-		return [];
+
+		const availableSquares = [];
+		const [row, col] = square;
+
+		for (const [rowMove, colMove] of this.knightMoves) {
+			const targetRow = row + rowMove;
+			const targetCol = col + colMove;
+
+			const targetSquare = this.board[targetRow]?.[targetCol];
+
+			if (targetSquare !== undefined) {
+
+				if (!this.playerPieces.includes(targetSquare)) {
+					availableSquares.push([targetRow, targetCol]);
+				}
+			}
+		}
+
+		return availableSquares;
+	}
+
+	knightAttackedSquares(square) {
+
+		const attackedSquares = [];
+		const [row, col] = square;
+
+		for (const [rowMove, colMove] of this.knightMoves) {
+			const targetRow = row + rowMove;
+			const targetCol = col + colMove;
+
+			if (this.board[targetRow]?.[targetCol] !== undefined) {
+				attackedSquares.push([targetRow, targetCol]);
+			}
+		}
+
+		return attackedSquares;
+
 	}
 
 	pawnAvailableSquares(square) {
