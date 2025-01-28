@@ -32,6 +32,9 @@ export class Pieces {
 		[0, 1], [1, 0], [-1, -1], [-1, 1],
 		[-1, 0], [1, -1], [1, 1], [0, -1]
 	];
+	bishopMoves = [
+		[1, 1], [1, -1], [-1, 1], [-1, -1]
+	];
 	knightMoves = [
 		[2, 1], [2, -1], [-2, 1], [-2, -1],
 		[1, 2], [1, -2], [-1, 2], [-1, -2]
@@ -56,7 +59,11 @@ export class Pieces {
 				return this.rookAvailableSquares(square);
 
 			case `w_bishop`:
-				return this.bishopAvailableSquares(square);
+				if (getAttackedSquares) {
+					return this.bishopAttackedSquares(square);
+				} else {
+					return this.bishopAvailableSquares(square);
+				}
 
 			case `w_knight`:
 				if (getAttackedSquares) {
@@ -88,7 +95,11 @@ export class Pieces {
 				return this.rookAvailableSquares(square);
 
 			case `b_bishop`:
-				return this.bishopAvailableSquares(square);
+				if (getAttackedSquares) {
+					return this.bishopAttackedSquares(square);
+				} else {
+					return this.bishopAvailableSquares(square);
+				}
 
 			case `b_knight`:
 				return this.knightAvailableSquares(square);
@@ -153,8 +164,70 @@ export class Pieces {
 	}
 
 	bishopAvailableSquares(square) {
-		//console.log(`Bishop squares`);
-		return [];
+		const availableSquares = [];
+		const [row, col] = square;
+
+
+		for (let [rowMove, colMove] of this.bishopMoves) {
+			let targetRow = row + rowMove;
+			let targetCol = col + colMove;
+
+			while (true) {
+				const targetSquare = this.board[targetRow]?.[targetCol];
+
+				// If the square is out of the board or contains one of the player pieces the loop stops
+				if (targetSquare === undefined || this.playerPieces.includes(targetSquare)) {
+					break;
+				}
+
+				availableSquares.push([targetRow, targetCol]);
+
+				// If the last square we added contains an opponent piece the loop stops
+				if (this.opponentPieces.includes(targetSquare)) {
+					break;
+				}
+
+				targetRow += rowMove;
+				targetCol += colMove;
+			}
+		}
+
+
+		return availableSquares;
+	}
+
+	bishopAttackedSquares(square) {
+
+		const attackedSquares = [];
+		const [row, col] = square;
+
+
+		for (let [rowMove, colMove] of this.bishopMoves) {
+			let targetRow = row + rowMove;
+			let targetCol = col + colMove;
+
+			while (true) {
+				const targetSquare = this.board[targetRow]?.[targetCol];
+
+				if (targetSquare === undefined) {
+					break;
+				}
+
+				attackedSquares.push([targetRow, targetCol]);
+
+				if (this.playerPieces.includes(targetSquare) || this.opponentPieces.includes(targetSquare)) {
+					break;
+				}
+
+				targetRow += rowMove;
+				targetCol += colMove;
+			}
+		}
+
+
+		return attackedSquares;
+
+
 	}
 
 	knightAvailableSquares(square) {
