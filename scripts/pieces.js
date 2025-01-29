@@ -241,7 +241,7 @@ export class Pieces {
 		const doubleForwardMove = row - this.turn * 2;
 
 		// First push
-		if (isInitialRow && this.board[doubleForwardMove]?.[col] === 0) {
+		if (isInitialRow && this.board[doubleForwardMove]?.[col] === 0 && this.board[forwardMove]?.[col] === 0) {
 			addSquareIfValid(doubleForwardMove, col, true);
 		}
 
@@ -368,7 +368,7 @@ export class Pieces {
 		}
 	}
 
-	isKingOnCheck(board, turn) {
+	isKingOnCheckAfterMove() {
 
 	}
 

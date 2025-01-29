@@ -32,7 +32,7 @@ export class Game {
 			[0, 0, 0, 0, 0, 0, 0, 4],
 			[0, 0, 0, 3, 0, 2, 0, 3],
 			[3, 0, 8, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 1, 0, 0, -5],
+			[0, 0, 0, 0, 1, 0, 0, -3],
 			[1, 1, 1, 1, 7, 1, 1, 1],
 			[5, 2, 0, 0, 0, 0, 2, 4],
 		];
@@ -111,7 +111,7 @@ export class Game {
 				const pieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
 				const pieceAvailableMoves = pieces.getPieceAvailableMoves(squareImageId, pieceSquare, false);
 
-				console.log(`PIECE AVAILABLE MOVES : ${pieceAvailableMoves.toString()}`);
+				console.log(`PIECE AVAILABLE MOVES : ${pieceAvailableMoves}`);
 				this.showAvailableSquares(pieceAvailableMoves);
 			}
 
