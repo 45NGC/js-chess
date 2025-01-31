@@ -27,14 +27,14 @@ export class Game {
 		// 	[5, 2, 3, 8, 7, 3, 2, 4],
 
 		this.board = [
-			[-5, -2, -3, -8, -7, -3, -2, -4],
-			[-1, -1, -1, -1, -1, -1, -1, -1],
-			[0, 0, 0, 0, 0, 0, 0, 4],
-			[0, 0, 0, 3, 0, 2, 0, 3],
-			[3, 0, 8, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 1, 0, 0, -3],
-			[1, 1, 1, 1, 7, 1, 1, 1],
-			[5, 2, 0, 0, 0, 0, 2, 4],
+			[0, -3, 0, 0, 0, 0, 0, 3],
+			[0, 0, 0, 0, -7, 0, 0, 0],
+			[0, 0, 0, 0, -4, 0, 0, 0],
+			[0, 0, 0, 0, 3, 0, 0, 0],
+			[0, 0, 0, 0, 0, 7, 0, 0],
+			[0, 4, 4, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
 		];
 	}
 
@@ -101,7 +101,7 @@ export class Game {
 		const squareImage = clickedSquare.querySelector('img');
 		if (squareImage) {
 
-			const pieces = new Pieces(this.board, this.turn);
+			const pieces = new Pieces(this.turn);
 			const squareImageId = squareImage.getAttribute('id');
 
 			// Only calls 'getPieceAvailableMoves' if the selected piece is of the corresponding color
@@ -109,9 +109,9 @@ export class Game {
 			if (pieces.playerPieces.includes(pieces.getKeyByValue(PIECE_MAP, squareImageId))) {
 
 				const pieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
-				const pieceAvailableMoves = pieces.getPieceAvailableMoves(squareImageId, pieceSquare, false);
+				const pieceAvailableMoves = pieces.getPieceAvailableMoves(this.board, squareImageId, pieceSquare, false);
 
-				console.log(`PIECE AVAILABLE MOVES : ${pieceAvailableMoves}`);
+				//console.log(`PIECE AVAILABLE MOVES : ${pieceAvailableMoves}`);
 				this.showAvailableSquares(pieceAvailableMoves);
 			}
 
