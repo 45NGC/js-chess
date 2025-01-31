@@ -377,14 +377,11 @@ export class Pieces {
 		simulatedBoard[toRow][toCol] = simulatedBoard[fromRow][fromCol];
 		simulatedBoard[fromRow][fromCol] = 0;
 
-		//debugger;
-		console.log(simulatedBoard);
 
 		const [kingRow, kingCol] = this.getKingSquare(simulatedBoard);
 		const opponentAttackedSquares = this.getOpponentAttackedSquares(simulatedBoard);
 
 		// If the king is under attack after the move it returns true
-		//debugger;
 		return this.isSquareAttackedByOpponent(kingRow, kingCol, opponentAttackedSquares);
 	}
 
@@ -405,7 +402,7 @@ export class Pieces {
 				}
 			}
 		}
-		//console.log(opponentAttackedSquares);
+
 		return opponentAttackedSquares;
 	}
 

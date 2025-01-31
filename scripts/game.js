@@ -111,7 +111,6 @@ export class Game {
 				const pieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
 				const pieceAvailableMoves = pieces.getPieceAvailableMoves(this.board, squareImageId, pieceSquare, false);
 
-				//console.log(`PIECE AVAILABLE MOVES : ${pieceAvailableMoves}`);
 				this.showAvailableSquares(pieceAvailableMoves);
 			}
 
