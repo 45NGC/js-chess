@@ -34,8 +34,11 @@ export class Game {
 			[0, 0, 0, 0, 0, 7, 0, 0],
 			[0, 4, 4, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, -4, 0, 0],
 		];
+
+		this.availableSquares = [];
+		this.selectedPieceSquare = [];
 	}
 
 	startGame() {
@@ -84,13 +87,25 @@ export class Game {
 
 	handleMouseClick(event) {
 
-		// hide active overlays and circles
+		const clickedSquare = event.currentTarget;
 
+		// check if the square is an available square
+		if (this.availableSquares.includes(clickedSquare.id)) {
+
+			// In case that the square is available we make the move
+			const goToSquare = clickedSquare.id.match(/\d+/g).map(Number);
+			this.movePiece(goToSquare);
+
+		} else {
+			this.availableSquares = [];
+		}
+
+
+		// hide active overlays and circles
 		this.hideElements(`.circle`);
 		this.hideElements(`.overlay`);
 
 		// show an overlay over the targeted square
-		const clickedSquare = event.currentTarget;
 		const squareOverlay = clickedSquare.querySelector('.overlay');
 
 		if (squareOverlay) {
@@ -108,8 +123,8 @@ export class Game {
 			// (if turn = 1 only white pieces can move and if turn = -1 only the black pieces can move)
 			if (pieces.playerPieces.includes(pieces.getKeyByValue(PIECE_MAP, squareImageId))) {
 
-				const pieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
-				const pieceAvailableMoves = pieces.getPieceAvailableMoves(this.board, squareImageId, pieceSquare, false);
+				this.selectedPieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
+				const pieceAvailableMoves = pieces.getPieceAvailableMoves(this.board, squareImageId, this.selectedPieceSquare, false);
 
 				this.showAvailableSquares(pieceAvailableMoves);
 			}
@@ -123,6 +138,8 @@ export class Game {
 
 			const cellId = `square-${row}-${col}`;
 			const cell = document.getElementById(cellId);
+
+			this.availableSquares.push(cellId);
 
 			if (cell) {
 
@@ -151,6 +168,20 @@ export class Game {
 
 	getAllAvailableMoves(board, turn) {
 
+	}
+
+	movePiece(goToSquare) {
+
+		const [pieceRow, pieceCol] = this.selectedPieceSquare;
+		const [goToRow, goToCol] = goToSquare;
+
+		this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
+		this.board[pieceRow][pieceCol] = 0;
+
+		this.availableSquares = [];
+
+		this.renderBoard();
+		this.switchTurn();
 	}
 
 	switchTurn() {
