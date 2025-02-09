@@ -198,7 +198,9 @@ export class Pieces {
 			if (targetSquare !== undefined) {
 
 				if (!this.playerPieces.includes(targetSquare)) {
-					availableSquares.push([targetRow, targetCol]);
+					if (!this.isKingInCheckAfterMove(board, row, col, targetRow, targetCol)) {
+						availableSquares.push([targetRow, targetCol]);
+					}
 				}
 			}
 		}
@@ -231,7 +233,9 @@ export class Pieces {
 		// Helper function to check and add a square if it is valid
 		const addSquareIfValid = (targetRow, targetCol, condition) => {
 			if (board[targetRow]?.[targetCol] !== undefined && condition) {
-				availableSquares.push([targetRow, targetCol]);
+				if (!this.isKingInCheckAfterMove(board, row, col, targetRow, targetCol)) {
+					availableSquares.push([targetRow, targetCol]);
+				}
 			}
 		};
 
