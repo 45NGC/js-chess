@@ -338,15 +338,6 @@ export class Pieces {
 	}
 
 	selectMovement(piece) {
-
-		// switch (piece) {
-		// 	case `queen`:
-		// 		return this.queenMoves;
-		// 	case `rook`:
-		// 		return this.rookMoves;
-		// 	case `bishop`:
-		// 		return this.bishopMoves;
-		// }
 		return MOVES[piece];
 	}
 
