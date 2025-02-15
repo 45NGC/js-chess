@@ -19,6 +19,14 @@ export const PIECE_MAP = {
 	'-8': `b_queen`
 };
 
+const MOVES = {
+	king: [[0, 1], [1, 0], [-1, -1], [-1, 1], [-1, 0], [1, -1], [1, 1], [0, -1]],
+	queen: [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [0, 1], [-1, 0], [0, -1]],
+	rook: [[1, 0], [0, 1], [-1, 0], [0, -1]],
+	bishop: [[1, 1], [1, -1], [-1, 1], [-1, -1]],
+	knight: [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2]]
+};
+
 export class Pieces {
 
 	constructor(turn) {
@@ -26,25 +34,6 @@ export class Pieces {
 		this.playerPieces = this.getPlayerPieces(turn);
 		this.opponentPieces = this.getPlayerPieces(-turn);
 	}
-
-	kingMoves = [
-		[0, 1], [1, 0], [-1, -1], [-1, 1],
-		[-1, 0], [1, -1], [1, 1], [0, -1]
-	];
-	queenMoves = [
-		[1, 1], [1, -1], [-1, 1], [-1, -1],
-		[1, 0], [0, 1], [-1, 0], [0, -1]
-	];
-	rookMoves = [
-		[1, 0], [0, 1], [-1, 0], [0, -1]
-	];
-	bishopMoves = [
-		[1, 1], [1, -1], [-1, 1], [-1, -1]
-	];
-	knightMoves = [
-		[2, 1], [2, -1], [-2, 1], [-2, -1],
-		[1, 2], [1, -2], [-1, 2], [-1, -2]
-	];
 
 	getPieceAvailableMoves(board, piece, square, getAttackedSquares) {
 
@@ -146,8 +135,9 @@ export class Pieces {
 
 		const availableSquares = [];
 		const [row, col] = square;
+		const pieceMoves = this.selectMovement(`king`);
 
-		for (const [rowMove, colMove] of this.kingMoves) {
+		for (const [rowMove, colMove] of pieceMoves) {
 			const targetRow = row + rowMove;
 			const targetCol = col + colMove;
 
@@ -169,10 +159,12 @@ export class Pieces {
 	kingAttackedSquares(board, square) {
 
 		const attackedSquares = [];
+		const [row, col] = square;
+		const pieceMoves = this.selectMovement(`king`);
 
-		for (const [rowMove, colMove] of this.kingMoves) {
-			const targetRow = square[0] + rowMove;
-			const targetCol = square[1] + colMove;
+		for (const [rowMove, colMove] of pieceMoves) {
+			const targetRow = row + rowMove;
+			const targetCol = col + colMove;
 
 			// in case that we only want the attacked squares we do not need 
 			// to check if the target square is empty or if its has a piece in it
@@ -188,8 +180,9 @@ export class Pieces {
 
 		const availableSquares = [];
 		const [row, col] = square;
+		const pieceMoves = this.selectMovement(`knight`);
 
-		for (const [rowMove, colMove] of this.knightMoves) {
+		for (const [rowMove, colMove] of pieceMoves) {
 			const targetRow = row + rowMove;
 			const targetCol = col + colMove;
 
@@ -212,8 +205,9 @@ export class Pieces {
 
 		const attackedSquares = [];
 		const [row, col] = square;
+		const pieceMoves = this.selectMovement(`knight`);
 
-		for (const [rowMove, colMove] of this.knightMoves) {
+		for (const [rowMove, colMove] of pieceMoves) {
 			const targetRow = row + rowMove;
 			const targetCol = col + colMove;
 
@@ -345,14 +339,15 @@ export class Pieces {
 
 	selectMovement(piece) {
 
-		switch (piece) {
-			case `queen`:
-				return this.queenMoves;
-			case `rook`:
-				return this.rookMoves;
-			case `bishop`:
-				return this.bishopMoves;
-		}
+		// switch (piece) {
+		// 	case `queen`:
+		// 		return this.queenMoves;
+		// 	case `rook`:
+		// 		return this.rookMoves;
+		// 	case `bishop`:
+		// 		return this.bishopMoves;
+		// }
+		return MOVES[piece];
 	}
 
 
