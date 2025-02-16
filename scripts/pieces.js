@@ -35,6 +35,8 @@ export class Pieces {
 		this.opponentPieces = this.getPlayerPieces(-turn);
 	}
 
+	//TODO: add parameter turn to this function and refactor all the code to be more compact
+
 	getPieceAvailableMoves(board, piece, square, getAttackedSquares) {
 
 		switch (piece) {
