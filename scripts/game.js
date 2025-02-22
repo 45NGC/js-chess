@@ -68,7 +68,7 @@ export class Game {
 	renderBoard() {
 		const cells = document.querySelectorAll(".cell");
 		cells.forEach(cell => {
-			cell.innerHTML = '<div class="overlay"></div>';
+			cell.innerHTML = '<div class="overlayYellow">'; // </div><div class="overlayRed"></div>
 		});
 
 		for (let row = 0; row < this.board.length; row++) {
@@ -114,13 +114,14 @@ export class Game {
 
 		// hide active overlays and circles
 		this.hideElements(`.circle`);
-		this.hideElements(`.overlay`);
+		this.hideElements(`.overlayYellow`);
+		this.hideElements(`.overlayRed`);
 
 		// show an overlay over the targeted square
-		const squareOverlay = clickedSquare.querySelector('.overlay');
+		const yellowSquareOverlay = clickedSquare.querySelector('.overlayYellow');
 
-		if (squareOverlay) {
-			squareOverlay.style.display = 'block';
+		if (yellowSquareOverlay) {
+			yellowSquareOverlay.style.display = 'block';
 		}
 
 		// Check if the clicked square has a piece in it
@@ -154,13 +155,24 @@ export class Game {
 
 			if (cell) {
 
-				// delete all posible previous circles
+				// delete all posible previous circles and squares
 				cell.querySelectorAll('.circle').forEach(circle => circle.remove());
+				cell.querySelectorAll('.overlayRed').forEach(overlayRed => overlayRed.remove());
 
-				const circle = document.createElement('div');
-				circle.classList.add('circle');
+				if (this.board[row][col] != 0) {
 
-				cell.appendChild(circle);
+					// TODO: Make a function that ads elements to cells by parameter to avoid duplicate code
+
+					const redSquareOverlay = document.createElement('div');
+					redSquareOverlay.classList.add('overlayRed');
+					redSquareOverlay.style.display = 'block';
+					cell.appendChild(redSquareOverlay);
+
+				} else {
+					const circle = document.createElement('div');
+					circle.classList.add('circle');
+					cell.appendChild(circle);
+				}
 
 			} else {
 				console.warn(`square not found ID: ${cellId}`);
