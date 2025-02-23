@@ -68,7 +68,7 @@ export class Game {
 	renderBoard() {
 		const cells = document.querySelectorAll(".cell");
 		cells.forEach(cell => {
-			cell.innerHTML = '<div class="overlayYellow">'; // </div><div class="overlayRed"></div>
+			cell.innerHTML = '<div class="overlayYellow">';
 		});
 
 		for (let row = 0; row < this.board.length; row++) {
@@ -110,7 +110,6 @@ export class Game {
 		} else {
 			this.availableSquares = [];
 		}
-
 
 		// hide active overlays and circles
 		this.hideElements(`.circle`);
@@ -160,18 +159,9 @@ export class Game {
 				cell.querySelectorAll('.overlayRed').forEach(overlayRed => overlayRed.remove());
 
 				if (this.board[row][col] != 0) {
-
-					// TODO: Make a function that ads elements to cells by parameter to avoid duplicate code
-
-					const redSquareOverlay = document.createElement('div');
-					redSquareOverlay.classList.add('overlayRed');
-					redSquareOverlay.style.display = 'block';
-					cell.appendChild(redSquareOverlay);
-
+					this.addElementToCell(cell, 'overlayRed');
 				} else {
-					const circle = document.createElement('div');
-					circle.classList.add('circle');
-					cell.appendChild(circle);
+					this.addElementToCell(cell, 'circle');
 				}
 
 			} else {
@@ -180,8 +170,15 @@ export class Game {
 		});
 	}
 
-	hideElements(selector) {
+	addElementToCell(cell, elementType) {
+		const element = document.createElement('div');
 
+		element.classList.add(elementType);
+		cell.appendChild(element);
+	}
+
+
+	hideElements(selector) {
 		const elements = document.querySelectorAll(selector);
 
 		elements.forEach(element => {

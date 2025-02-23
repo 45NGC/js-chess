@@ -50,10 +50,8 @@ body {
 	left: 0;
 	width: 60px;
 	height: 60px;
-	/* transparent yellow */
+	/* transparent red */
 	background-color: rgba(255, 0, 0, 0.7);
-	/* Hidden by default*/
-	display: none;
 	pointer-events: none;
 	z-index: 1;
 }
