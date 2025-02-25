@@ -113,8 +113,11 @@ export class Game {
 
 		// hide active overlays and circles
 		this.hideElements(`.circle`);
-		this.hideElements(`.overlayYellow`);
 		this.hideElements(`.overlayRed`);
+
+		document.querySelectorAll('.overlayYellow').forEach(overlay => {
+			overlay.style.display = 'none';
+		});
 
 		// show an overlay over the targeted square
 		const yellowSquareOverlay = clickedSquare.querySelector('.overlayYellow');
@@ -180,17 +183,17 @@ export class Game {
 
 	hideElements(selector) {
 		const elements = document.querySelectorAll(selector);
-
-		elements.forEach(element => {
-			element.style.display = 'none';
-		});
+		elements.forEach(element => element.remove());
 	}
+
 
 	getAllAvailableMoves(board, turn) {
 
 	}
 
 	movePiece(goToSquare) {
+		// delete previous 'last move' mark
+		this.hideElements('.lastMoveMark');
 
 		const [pieceRow, pieceCol] = this.selectedPieceSquare;
 		const [goToRow, goToCol] = goToSquare;
@@ -201,8 +204,17 @@ export class Game {
 		this.availableSquares = [];
 
 		this.renderBoard();
+
+		// Add 'last move' mark
+		const goToCell = document.getElementById(`square-${goToRow}-${goToCol}`);
+		const pieceCell = document.getElementById(`square-${pieceRow}-${pieceCol}`);
+
+		if (goToCell) this.addElementToCell(goToCell, 'lastMoveMark');
+		if (pieceCell) this.addElementToCell(pieceCell, 'lastMoveMark');
+
 		this.switchTurn();
 	}
+
 
 	switchTurn() {
 		this.turn = this.turn === 1 ? -1 : 1;
