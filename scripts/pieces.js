@@ -250,7 +250,7 @@ export class Pieces {
 		// Capture
 		[-1, 1].forEach(offset => {
 			const targetCol = col + offset;
-			addSquareIfValid(forwardMove, targetCol, this.opponentPieces.includes(board[forwardMove]?.[targetCol]));
+			addSquareIfValid(forwardMove, targetCol, this.opponentPieces.includes(board[forwardMove]?.[targetCol]) || board[forwardMove]?.[targetCol] == 9);
 		});
 
 		return availableSquares;
@@ -387,7 +387,7 @@ export class Pieces {
 			for (let col = 0; col < board[row].length; col++) {
 				const posiblePiece = board[row][col];
 
-				if (this.opponentPieces.includes(posiblePiece)) {
+				if (this.opponentPieces.includes(posiblePiece) && posiblePiece !== 9) {
 
 					opponentAttackedSquares.push(this.getPieceAvailableMoves(board, PIECE_MAP[posiblePiece.toString()], [row, col], true));
 
@@ -407,7 +407,7 @@ export class Pieces {
 	}
 
 	getPlayerPieces(turn) {
-		return turn === 1 ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [-1, -2, -3, -4, -5, -6, -7, -8, -9];
+		return turn === 1 ? [1, 2, 3, 4, 5, 6, 7, 8] : [-1, -2, -3, -4, -5, -6, -7, -8];
 	}
 
 	// In case any move is made we delete the available en passant squares because they only last one turn

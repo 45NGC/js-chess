@@ -13,7 +13,7 @@ export class Game {
 		// Rook 				= 4 / -4	5 / -5	(short-castle	long-castle)  6/-6 (promoted rook)
 		// King 				= 7 / -7
 		// Queen				= 8 / -8
-		// En passant squares   = 9 / -9
+		// En passant squares   = 9
 		//
 		// Example of board after a pawn push :
 		//
@@ -74,7 +74,7 @@ export class Game {
 		for (let row = 0; row < this.board.length; row++) {
 			for (let col = 0; col < this.board[row].length; col++) {
 				const piece = this.board[row][col];
-				if (piece !== 0) {
+				if (piece !== 0 && piece !== 9) {
 					const pieceImage = PIECE_MAP[piece.toString()] + `.png`;
 					const cellId = `square-${row}-${col}`;
 					const cell = document.getElementById(cellId);
@@ -196,13 +196,23 @@ export class Game {
 		this.hideElements('.lastMoveMark');
 
 		const [pieceRow, pieceCol] = this.selectedPieceSquare;
-		const [goToRow, goToCol] = goToSquare;
+		let [goToRow, goToCol] = goToSquare;
 
-		this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
-		this.board[pieceRow][pieceCol] = 0;
+		// Check if the goToSquare is an 'en passant' square
+		if (this.board[goToRow][goToCol] == 9) {
+
+			this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
+			this.board[pieceRow][pieceCol] = 0;
+
+			// Delete the pawn that was captured 'en passant'
+			this.board[pieceRow][goToCol] = 0;
+			
+		} else {
+			this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
+			this.board[pieceRow][pieceCol] = 0;
+		}
 
 		this.availableSquares = [];
-
 		this.renderBoard();
 
 		// Add 'last move' mark
@@ -212,8 +222,36 @@ export class Game {
 		if (goToCell) this.addElementToCell(goToCell, 'lastMoveMark');
 		if (pieceCell) this.addElementToCell(pieceCell, 'lastMoveMark');
 
+		// delete previous 'en passant' squares
+		this.deleteEnPassantSquares();
+
+		// Check if after the move there are some squares available for capture 'en passant'
+
+		// First we check if the piece that made the move was a pawn:
+		if (this.board[goToRow][goToCol] === 1 || this.board[goToRow][goToCol] === -1) {
+
+			// Check if the pawn moved 2 squares
+			const rowDifference = Math.abs(goToRow - pieceRow);
+			if (rowDifference === 2) {
+				const enPassantRow = (pieceRow + goToRow) / 2;
+				this.board[enPassantRow][goToCol] = 9;
+				console.log(this.board);
+			}
+		}
+
 		this.switchTurn();
 	}
+
+	deleteEnPassantSquares() {
+		for (let i = 0; i < this.board.length; i++) {
+			for (let j = 0; j < this.board[i].length; j++) {
+				if (this.board[i][j] === 9) {
+					this.board[i][j] = 0;
+				}
+			}
+		}
+	}
+
 
 
 	switchTurn() {
