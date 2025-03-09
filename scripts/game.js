@@ -1,6 +1,6 @@
 'use strict'
 
-import { Pieces, PIECE_MAP } from "./pieces.js";
+import { Pieces, PIECE_MAP, CASTLING_PIECES } from "./pieces.js";
 
 export class Game {
 	constructor() {
@@ -50,6 +50,11 @@ export class Game {
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
+
+		this.castlingRights = {
+			white: { short: true, long: true },
+			black: { short: true, long: true }
+		};
 	}
 
 	startGame() {
@@ -138,7 +143,7 @@ export class Game {
 			if (pieces.playerPieces.includes(pieces.getKeyByValue(PIECE_MAP, squareImageId))) {
 
 				this.selectedPieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
-				const pieceAvailableMoves = pieces.getPieceAvailableMoves(this.board, squareImageId, this.selectedPieceSquare, false);
+				const pieceAvailableMoves = pieces.getPieceAvailableMoves(this.board, squareImageId, this.selectedPieceSquare, this.castlingRights, false);
 
 				this.showAvailableSquares(pieceAvailableMoves);
 			}
@@ -196,7 +201,34 @@ export class Game {
 		this.hideElements('.lastMoveMark');
 
 		const [pieceRow, pieceCol] = this.selectedPieceSquare;
-		let [goToRow, goToCol] = goToSquare;
+		const [goToRow, goToCol] = goToSquare;
+
+		const piece = this.board[pieceRow][pieceCol];
+
+		// Check if the move is castling
+		// (if the moving piece is the king and it has moved more than 2 squares it means it is castling)
+		if ((piece === 7 || piece === -7) && Math.abs(goToCol - pieceCol) === 2) {
+
+			// Short castle
+			if (goToCol === 6) {
+				const rook = goToRow === 0 ? -4 : 4;
+				this.board[goToRow][goToCol - 1] = rook;
+				this.board[goToRow][goToCol + 1] = 0;
+			}
+
+			// Long castle
+			if (goToCol === 2) {
+				const rook = goToRow === 0 ? -5 : 5;
+				this.board[goToRow][goToCol + 1] = rook;
+				this.board[goToRow][goToCol - 2] = 0;
+			}
+		}
+
+
+		// Check castling rights
+		if (CASTLING_PIECES.includes(piece)) {
+			this.checkCastlingRights(piece);
+		}
 
 		// Check if the goToSquare is an 'en passant' square
 		if (this.board[goToRow][goToCol] == 9) {
@@ -206,7 +238,7 @@ export class Game {
 
 			// Delete the pawn that was captured 'en passant'
 			this.board[pieceRow][goToCol] = 0;
-			
+
 		} else {
 			this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
 			this.board[pieceRow][pieceCol] = 0;
@@ -235,11 +267,26 @@ export class Game {
 			if (rowDifference === 2) {
 				const enPassantRow = (pieceRow + goToRow) / 2;
 				this.board[enPassantRow][goToCol] = 9;
-				console.log(this.board);
 			}
 		}
 
 		this.switchTurn();
+	}
+
+	checkCastlingRights(movingPiece) {
+
+		// If the king moves we loose both castling rights
+		if (movingPiece === 7) this.castlingRights.white = { short: false, long: false };
+		if (movingPiece === -7) this.castlingRights.black = { short: false, long: false };
+
+		// If the long rook moves we loose long castling
+		if (movingPiece === 5 && pieceCol === 0) this.castlingRights.white.long = false;
+		if (movingPiece === -5 && pieceCol === 0) this.castlingRights.black.long = false;
+
+		// If the short rook moves we loose short castling
+		if (movingPiece === 4 && pieceCol === 7) this.castlingRights.white.short = false;
+		if (movingPiece === -4 && pieceCol === 7) this.castlingRights.black.short = false;
+
 	}
 
 	deleteEnPassantSquares() {
@@ -251,8 +298,6 @@ export class Game {
 			}
 		}
 	}
-
-
 
 	switchTurn() {
 		this.turn = this.turn === 1 ? -1 : 1;

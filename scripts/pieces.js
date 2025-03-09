@@ -19,6 +19,8 @@ export const PIECE_MAP = {
 	'-8': `b_queen`
 };
 
+export const CASTLING_PIECES = [4, -4, 5, -5, 7, -7];
+
 const MOVES = {
 	king: [[0, 1], [1, 0], [-1, -1], [-1, 1], [-1, 0], [1, -1], [1, 1], [0, -1]],
 	queen: [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [0, 1], [-1, 0], [0, -1]],
@@ -37,16 +39,16 @@ export class Pieces {
 
 	//TODO: add parameter turn to this function and refactor all the code to be more compact
 
-	getPieceAvailableMoves(board, piece, square, getAttackedSquares) {
+	getPieceAvailableMoves(board, squareImageId, square, castlingRights, getAttackedSquares) {
 
-		switch (piece) {
+		switch (squareImageId) {
 
 			// WHITE PIECES
 			case `w_king`:
 				if (getAttackedSquares) {
 					return this.kingAttackedSquares(board, square);
 				} else {
-					return this.kingAvailableSquares(board, square);
+					return this.kingAvailableSquares(board, square, castlingRights);
 				}
 
 			case `w_queen`:
@@ -90,7 +92,7 @@ export class Pieces {
 				if (getAttackedSquares) {
 					return this.kingAttackedSquares(board, square);
 				} else {
-					return this.kingAvailableSquares(board, square);
+					return this.kingAvailableSquares(board, square, castlingRights);
 				}
 
 			case `b_queen`:
@@ -133,12 +135,13 @@ export class Pieces {
 
 	// PIECE METHODS :
 
-	kingAvailableSquares(board, square) {
+	kingAvailableSquares(board, square, castlingRights) {
 
 		const availableSquares = [];
 		const [row, col] = square;
 		const pieceMoves = this.selectMovement(`king`);
 
+		// NORMAL MOVE
 		for (const [rowMove, colMove] of pieceMoves) {
 			const targetRow = row + rowMove;
 			const targetCol = col + colMove;
@@ -153,6 +156,35 @@ export class Pieces {
 					availableSquares.push([targetRow, targetCol]);
 				}
 			}
+		}
+
+		// CASTLING
+		if (!this.isKingInCheck(board)) {
+			const color = board[row][col] > 0 ? "white" : "black";
+
+			// Short
+			if (castlingRights[color].short) {
+				// Check if the squares in between are empty and not attacked
+				if (
+					board[row][5] === 0 && board[row][6] === 0 &&
+					!this.isKingInCheckAfterMove(board, row, col, row, 5) &&
+					!this.isKingInCheckAfterMove(board, row, col, row, 6)
+				) {
+					availableSquares.push([row, 6]);
+				}
+			}
+
+			// Long
+			if (castlingRights[color].long) {
+				if (
+					board[row][1] === 0 && board[row][2] === 0 && board[row][3] === 0 &&
+					!this.isKingInCheckAfterMove(board, row, col, row, 2) &&
+					!this.isKingInCheckAfterMove(board, row, col, row, 3)
+				) {
+					availableSquares.push([row, 2]);
+				}
+			}
+
 		}
 
 		return availableSquares;
@@ -377,6 +409,15 @@ export class Pieces {
 		return this.isSquareAttackedByOpponent(kingRow, kingCol, opponentAttackedSquares);
 	}
 
+	isKingInCheck(board) {
+
+		const [kingRow, kingCol] = this.getKingSquare(board);
+		const opponentAttackedSquares = this.getOpponentAttackedSquares(board);
+
+		// If the king is under attack it returns true
+		return this.isSquareAttackedByOpponent(kingRow, kingCol, opponentAttackedSquares);
+	}
+
 
 
 	getOpponentAttackedSquares(board) {
@@ -389,7 +430,7 @@ export class Pieces {
 
 				if (this.opponentPieces.includes(posiblePiece) && posiblePiece !== 9) {
 
-					opponentAttackedSquares.push(this.getPieceAvailableMoves(board, PIECE_MAP[posiblePiece.toString()], [row, col], true));
+					opponentAttackedSquares.push(this.getPieceAvailableMoves(board, PIECE_MAP[posiblePiece.toString()], [row, col], undefined, true));
 
 				}
 			}
