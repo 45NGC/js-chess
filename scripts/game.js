@@ -26,27 +26,27 @@ export class Game {
 		// 	[1, 1, 1, 1, 1, 0, 1, 1],
 		// 	[5, 2, 3, 8, 7, 3, 2, 4],
 
-		this.board = [
-			[-5, -2, -3, -8, -7, -3, -2, -4],
-			[-1, -1, -1, -1, -1, -1, -1, -1],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[1, 1, 1, 1, 1, 1, 1, 1],
-			[5, 2, 3, 8, 7, 3, 2, 4],
-		];
-
 		// this.board = [
-		// 	[0, -3, 0, 0, 0, 0, 0, 3],
-		// 	[0, 0, 0, 0, -7, 0, 0, 0],
-		// 	[0, 0, 0, 0, -4, 0, 0, 0],
-		// 	[0, 0, 0, 0, 3, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, 7, 0, 0],
-		// 	[0, 4, 4, 0, 0, 0, 0, 0],
+		// 	[-5, -2, -3, -8, -7, -3, -2, -4],
+		// 	[-1, -1, -1, -1, -1, -1, -1, -1],
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, -4, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[1, 1, 1, 1, 1, 1, 1, 1],
+		// 	[5, 2, 3, 8, 7, 3, 2, 4],
 		// ];
+
+		this.board = [
+			[0, 0, 0, 0, 0, 0, 0, -7],
+			[4, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 7, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 4, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+		];
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
@@ -191,9 +191,29 @@ export class Game {
 		elements.forEach(element => element.remove());
 	}
 
-
 	getAllAvailableMoves(board, turn) {
+		const moves = [];
 
+		for (let row = 0; row < board.length; row++) {
+			for (let col = 0; col < board[row].length; col++) {
+				const piece = board[row][col];
+
+				if (piece !== 0 && Math.sign(piece) === turn) {
+					const pieceType = PIECE_MAP[piece.toString()];
+					const pieces = new Pieces(turn);
+
+					if (pieceType) {
+						const availableMoves = pieces.getPieceAvailableMoves(board, pieceType, [row, col], this.castlingRights, false);
+
+						availableMoves.forEach(move => {
+							moves.push({ from: [row, col], to: move });
+						});
+					}
+				}
+			}
+		}
+
+		return moves;
 	}
 
 	movePiece(goToSquare) {
@@ -247,6 +267,24 @@ export class Game {
 		this.availableSquares = [];
 		this.renderBoard();
 
+
+		//TODO: Might have to make this an extra function
+
+		// Check if the position is a mate or a draw:
+		const moves = this.getAllAvailableMoves(this.board, this.turn * -1);
+		const opponentPieces = new Pieces(this.turn * -1);
+		const inCheck = opponentPieces.isKingInCheck(this.board);
+
+		if (Object.keys(moves).length === 0) {
+			if (inCheck) {
+				console.log("MATE");
+			} else {
+				console.log("DRAW");
+			}
+		}
+
+
+
 		// Add 'last move' mark
 		const goToCell = document.getElementById(`square-${goToRow}-${goToCol}`);
 		const pieceCell = document.getElementById(`square-${pieceRow}-${pieceCol}`);
@@ -274,6 +312,8 @@ export class Game {
 	}
 
 	checkCastlingRights(movingPiece) {
+
+		const pieceCol = this.selectedPieceSquare[1];
 
 		// If the king moves we loose both castling rights
 		if (movingPiece === 7) this.castlingRights.white = { short: false, long: false };
