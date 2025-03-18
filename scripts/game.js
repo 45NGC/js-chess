@@ -2,6 +2,10 @@
 
 import { Pieces, PIECE_MAP, CASTLING_PIECES } from "./pieces.js";
 
+const MOVE_SOUND = new Audio('assets/sound/move.mp3');
+const CAPTURE_SOUND = new Audio('assets/sound/capture.mp3');
+
+
 export class Game {
 	constructor() {
 		this.turn = 1;
@@ -307,6 +311,9 @@ export class Game {
 				this.board[enPassantRow][goToCol] = 9;
 			}
 		}
+
+		// TODO : make a function that reprouces a sound depending of the type of movement (normal move, capture...)
+		MOVE_SOUND.play();
 
 		this.switchTurn();
 	}
