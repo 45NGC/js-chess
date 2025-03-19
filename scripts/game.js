@@ -43,7 +43,7 @@ export class Game {
 
 		this.board = [
 			[0, 0, 0, 0, 0, 0, 0, -7],
-			[4, 0, 0, 0, 0, 0, 0, 0],
+			[4, 0, 0, -1, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 7, 0, 0],
@@ -229,6 +229,12 @@ export class Game {
 
 		const piece = this.board[pieceRow][pieceCol];
 
+		let moveType = 0;
+
+		if(this.board[goToRow][goToCol] != 0){
+			moveType = 1
+		}
+
 		// Check if the move is castling
 		// (if the moving piece is the king and it has moved more than 2 squares it means it is castling)
 		if ((piece === 7 || piece === -7) && Math.abs(goToCol - pieceCol) === 2) {
@@ -262,6 +268,7 @@ export class Game {
 
 			// Delete the pawn that was captured 'en passant'
 			this.board[pieceRow][goToCol] = 0;
+			moveType = 1
 
 		} else {
 			this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
@@ -279,10 +286,14 @@ export class Game {
 		const opponentPieces = new Pieces(this.turn * -1);
 		const inCheck = opponentPieces.isKingInCheck(this.board);
 
+		if (inCheck) moveType = 2;
+
 		if (Object.keys(moves).length === 0) {
 			if (inCheck) {
+				moveType = 3
 				console.log("MATE");
 			} else {
+				moveType = 4
 				console.log("DRAW");
 			}
 		}
@@ -312,10 +323,37 @@ export class Game {
 			}
 		}
 
-		// TODO : make a function that reprouces a sound depending of the type of movement (normal move, capture...)
-		MOVE_SOUND.play();
+		this.makeMoveSound(moveType);
 
 		this.switchTurn();
+	}
+
+	//TODO: Add check, mate and draw sounds
+	makeMoveSound(moveType) {
+		switch (moveType) {
+
+			case 0:
+				MOVE_SOUND.play();
+				break;
+
+			case 1:
+				CAPTURE_SOUND.play();
+				break;
+
+			case 2:
+				console.log(`CHECK SOUND`);
+				break;
+
+			case 3:
+				console.log(`MATE SOUND`);
+				break;
+
+			case 4:
+				console.log(`DRAW SOUND`);
+				break;
+
+		}
+
 	}
 
 	checkCastlingRights(movingPiece) {
