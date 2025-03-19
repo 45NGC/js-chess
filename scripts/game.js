@@ -221,111 +221,122 @@ export class Game {
 	}
 
 	movePiece(goToSquare) {
-		// delete previous 'last move' mark
 		this.hideElements('.lastMoveMark');
 
 		const [pieceRow, pieceCol] = this.selectedPieceSquare;
 		const [goToRow, goToCol] = goToSquare;
-
 		const piece = this.board[pieceRow][pieceCol];
 
-		let moveType = 0;
+		let moveType = this.determineMoveType(goToRow, goToCol);
 
-		if(this.board[goToRow][goToCol] != 0){
-			moveType = 1
+		if (this.isCastling(piece, pieceCol, goToCol)) {
+			this.performCastling(goToRow, goToCol, piece);
 		}
 
-		// Check if the move is castling
-		// (if the moving piece is the king and it has moved more than 2 squares it means it is castling)
-		if ((piece === 7 || piece === -7) && Math.abs(goToCol - pieceCol) === 2) {
-
-			// Short castle
-			if (goToCol === 6) {
-				const rook = goToRow === 0 ? -4 : 4;
-				this.board[goToRow][goToCol - 1] = rook;
-				this.board[goToRow][goToCol + 1] = 0;
-			}
-
-			// Long castle
-			if (goToCol === 2) {
-				const rook = goToRow === 0 ? -5 : 5;
-				this.board[goToRow][goToCol + 1] = rook;
-				this.board[goToRow][goToCol - 2] = 0;
-			}
-		}
-
-
-		// Check castling rights
 		if (CASTLING_PIECES.includes(piece)) {
 			this.checkCastlingRights(piece);
 		}
 
-		// Check if the goToSquare is an 'en passant' square
-		if (this.board[goToRow][goToCol] == 9) {
+		this.executeMove(pieceRow, pieceCol, goToRow, goToCol);
+		this.markLastMove(pieceRow, pieceCol, goToRow, goToCol);
+		this.handleEnPassant(pieceRow, goToRow, goToCol);
 
-			this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
-			this.board[pieceRow][pieceCol] = 0;
+		moveType = this.getGameStateWithMoveType(moveType);
 
-			// Delete the pawn that was captured 'en passant'
-			this.board[pieceRow][goToCol] = 0;
-			moveType = 1
+		this.makeMoveSound(moveType);
+		this.switchTurn();
+	}
 
-		} else {
-			this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
-			this.board[pieceRow][pieceCol] = 0;
+
+	determineMoveType(goToRow, goToCol) {
+		return this.board[goToRow][goToCol] !== 0 ? 1 : 0;
+	}
+
+	isCastling(piece, pieceCol, goToCol) {
+		return (piece === 7 || piece === -7) && Math.abs(goToCol - pieceCol) === 2;
+	}
+
+	performCastling(goToRow, goToCol, piece) {
+		if (goToCol === 6) {
+			this.board[goToRow][5] = piece > 0 ? 4 : -4;
+			this.board[goToRow][7] = 0;
 		}
+		if (goToCol === 2) {
+			this.board[goToRow][3] = piece > 0 ? 4 : -4;
+			this.board[goToRow][0] = 0;
+		}
+	}
 
+	checkCastlingRights(movingPiece) {
+
+		const pieceCol = this.selectedPieceSquare[1];
+
+		// If the king moves we loose both castling rights
+		if (movingPiece === 7) this.castlingRights.white = { short: false, long: false };
+		if (movingPiece === -7) this.castlingRights.black = { short: false, long: false };
+
+		// If the long rook moves we loose long castling
+		if (movingPiece === 5 && pieceCol === 0) this.castlingRights.white.long = false;
+		if (movingPiece === -5 && pieceCol === 0) this.castlingRights.black.long = false;
+
+		// If the short rook moves we loose short castling
+		if (movingPiece === 4 && pieceCol === 7) this.castlingRights.white.short = false;
+		if (movingPiece === -4 && pieceCol === 7) this.castlingRights.black.short = false;
+
+	}
+
+	executeMove(pieceRow, pieceCol, goToRow, goToCol) {
+		if (this.board[goToRow][goToCol] === 9) {
+			this.board[pieceRow][goToCol] = 0;
+		}
+		this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
+		this.board[pieceRow][pieceCol] = 0;
 		this.availableSquares = [];
 		this.renderBoard();
+	}
 
+	markLastMove(pieceRow, pieceCol, goToRow, goToCol) {
+		const goToCell = document.getElementById(`square-${goToRow}-${goToCol}`);
+		const pieceCell = document.getElementById(`square-${pieceRow}-${pieceCol}`);
+		if (goToCell) this.addElementToCell(goToCell, 'lastMoveMark');
+		if (pieceCell) this.addElementToCell(pieceCell, 'lastMoveMark');
+	}
 
-		//TODO: Might have to make this an extra function
+	handleEnPassant(pieceRow, goToRow, goToCol) {
+		this.deleteEnPassantSquares();
+		if (Math.abs(this.board[goToRow][goToCol]) === 1 && Math.abs(goToRow - pieceRow) === 2) {
+			const enPassantRow = (pieceRow + goToRow) / 2;
+			this.board[enPassantRow][goToCol] = 9;
+		}
+	}
 
-		// Check if the position is a mate or a draw:
+	deleteEnPassantSquares() {
+		for (let i = 0; i < this.board.length; i++) {
+			for (let j = 0; j < this.board[i].length; j++) {
+				if (this.board[i][j] === 9) {
+					this.board[i][j] = 0;
+				}
+			}
+		}
+	}
+
+	// Checks the state of the game and changes the moveType variable if necessary
+	getGameStateWithMoveType(previousMoveType) {
 		const moves = this.getAllAvailableMoves(this.board, this.turn * -1);
 		const opponentPieces = new Pieces(this.turn * -1);
 		const inCheck = opponentPieces.isKingInCheck(this.board);
 
-		if (inCheck) moveType = 2;
-
 		if (Object.keys(moves).length === 0) {
 			if (inCheck) {
-				moveType = 3
-				console.log("MATE");
+				return 3;
 			} else {
-				moveType = 4
-				console.log("DRAW");
+				return 4;
 			}
 		}
 
+		if (inCheck) return 2;
 
-
-		// Add 'last move' mark
-		const goToCell = document.getElementById(`square-${goToRow}-${goToCol}`);
-		const pieceCell = document.getElementById(`square-${pieceRow}-${pieceCol}`);
-
-		if (goToCell) this.addElementToCell(goToCell, 'lastMoveMark');
-		if (pieceCell) this.addElementToCell(pieceCell, 'lastMoveMark');
-
-		// delete previous 'en passant' squares
-		this.deleteEnPassantSquares();
-
-		// Check if after the move there are some squares available for capture 'en passant'
-
-		// First we check if the piece that made the move was a pawn:
-		if (this.board[goToRow][goToCol] === 1 || this.board[goToRow][goToCol] === -1) {
-
-			// Check if the pawn moved 2 squares
-			const rowDifference = Math.abs(goToRow - pieceRow);
-			if (rowDifference === 2) {
-				const enPassantRow = (pieceRow + goToRow) / 2;
-				this.board[enPassantRow][goToCol] = 9;
-			}
-		}
-
-		this.makeMoveSound(moveType);
-
-		this.switchTurn();
+		return previousMoveType;
 	}
 
 	//TODO: Add check, mate and draw sounds
@@ -351,37 +362,8 @@ export class Game {
 			case 4:
 				console.log(`DRAW SOUND`);
 				break;
-
 		}
 
-	}
-
-	checkCastlingRights(movingPiece) {
-
-		const pieceCol = this.selectedPieceSquare[1];
-
-		// If the king moves we loose both castling rights
-		if (movingPiece === 7) this.castlingRights.white = { short: false, long: false };
-		if (movingPiece === -7) this.castlingRights.black = { short: false, long: false };
-
-		// If the long rook moves we loose long castling
-		if (movingPiece === 5 && pieceCol === 0) this.castlingRights.white.long = false;
-		if (movingPiece === -5 && pieceCol === 0) this.castlingRights.black.long = false;
-
-		// If the short rook moves we loose short castling
-		if (movingPiece === 4 && pieceCol === 7) this.castlingRights.white.short = false;
-		if (movingPiece === -4 && pieceCol === 7) this.castlingRights.black.short = false;
-
-	}
-
-	deleteEnPassantSquares() {
-		for (let i = 0; i < this.board.length; i++) {
-			for (let j = 0; j < this.board[i].length; j++) {
-				if (this.board[i][j] === 9) {
-					this.board[i][j] = 0;
-				}
-			}
-		}
 	}
 
 	switchTurn() {
