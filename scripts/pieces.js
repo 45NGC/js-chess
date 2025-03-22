@@ -1,22 +1,22 @@
 'use strict'
 
 export const PIECE_MAP = {
-	'1': `w_pawn`,
-	'2': `w_knight`,
-	'3': `w_bishop`,
-	'4': `w_rook`,
-	'5': `w_rook`,
-	'6': `w_rook`,
-	'7': `w_king`,
-	'8': `w_queen`,
-	'-1': `b_pawn`,
-	'-2': `b_knight`,
-	'-3': `b_bishop`,
-	'-4': `b_rook`,
-	'-5': `b_rook`,
-	'-6': `b_rook`,
-	'-7': `b_king`,
-	'-8': `b_queen`
+	'1': `white_pawn`,
+	'2': `white_knight`,
+	'3': `white_bishop`,
+	'4': `white_rook`,
+	'5': `white_rook`,
+	'6': `white_rook`,
+	'7': `white_king`,
+	'8': `white_queen`,
+	'-1': `black_pawn`,
+	'-2': `black_knight`,
+	'-3': `black_bishop`,
+	'-4': `black_rook`,
+	'-5': `black_rook`,
+	'-6': `black_rook`,
+	'-7': `black_king`,
+	'-8': `black_queen`
 };
 
 export const CASTLING_PIECES = [4, -4, 5, -5, 7, -7];
@@ -44,35 +44,35 @@ export class Pieces {
 		switch (squareImageId) {
 
 			// WHITE PIECES
-			case `w_king`:
+			case `white_king`:
 				if (getAttackedSquares) {
 					return this.kingAttackedSquares(board, square);
 				} else {
 					return this.kingAvailableSquares(board, square, castlingRights);
 				}
 
-			case `w_queen`:
+			case `white_queen`:
 				if (getAttackedSquares) {
 					return this.queenRookBishopAttackedSquares(board, square, `queen`);
 				} else {
 					return this.queenRookBishopAvailableSquares(board, square, `queen`);
 				}
 
-			case `w_rook`:
+			case `white_rook`:
 				if (getAttackedSquares) {
 					return this.queenRookBishopAttackedSquares(board, square, `rook`);
 				} else {
 					return this.queenRookBishopAvailableSquares(board, square, `rook`);
 				}
 
-			case `w_bishop`:
+			case `white_bishop`:
 				if (getAttackedSquares) {
 					return this.queenRookBishopAttackedSquares(board, square, `bishop`);
 				} else {
 					return this.queenRookBishopAvailableSquares(board, square, `bishop`);
 				}
 
-			case `w_knight`:
+			case `white_knight`:
 				if (getAttackedSquares) {
 					return this.knightAttackedSquares(board, square);
 				} else {
@@ -80,7 +80,7 @@ export class Pieces {
 				}
 
 
-			case `w_pawn`:
+			case `white_pawn`:
 				if (getAttackedSquares) {
 					return this.pawnAttackedSquares(board, square);
 				} else {
@@ -88,42 +88,42 @@ export class Pieces {
 				}
 
 			// BLACK PIECES
-			case `b_king`:
+			case `black_king`:
 				if (getAttackedSquares) {
 					return this.kingAttackedSquares(board, square);
 				} else {
 					return this.kingAvailableSquares(board, square, castlingRights);
 				}
 
-			case `b_queen`:
+			case `black_queen`:
 				if (getAttackedSquares) {
 					return this.queenRookBishopAttackedSquares(board, square, `queen`);
 				} else {
 					return this.queenRookBishopAvailableSquares(board, square, `queen`);
 				}
 
-			case `b_rook`:
+			case `black_rook`:
 				if (getAttackedSquares) {
 					return this.queenRookBishopAttackedSquares(board, square, `rook`);
 				} else {
 					return this.queenRookBishopAvailableSquares(board, square, `rook`);
 				}
 
-			case `b_bishop`:
+			case `black_bishop`:
 				if (getAttackedSquares) {
 					return this.queenRookBishopAttackedSquares(board, square, `bishop`);
 				} else {
 					return this.queenRookBishopAvailableSquares(board, square, `bishop`);
 				}
 
-			case `b_knight`:
+			case `black_knight`:
 				if (getAttackedSquares) {
 					return this.knightAttackedSquares(board, square);
 				} else {
 					return this.knightAvailableSquares(board, square);
 				}
 
-			case `b_pawn`:
+			case `black_pawn`:
 				if (getAttackedSquares) {
 					return this.pawnAttackedSquares(board, square);
 				} else {

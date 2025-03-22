@@ -30,27 +30,27 @@ export class Game {
 		// 	[1, 1, 1, 1, 1, 0, 1, 1],
 		// 	[5, 2, 3, 8, 7, 3, 2, 4],
 
-		// this.board = [
-		// 	[-5, -2, -3, -8, -7, -3, -2, -4],
-		// 	[-1, -1, -1, -1, -1, -1, -1, -1],
-		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[1, 1, 1, 1, 1, 1, 1, 1],
-		// 	[5, 2, 3, 8, 7, 3, 2, 4],
-		// ];
-
 		this.board = [
-			[0, 0, 0, 0, 0, 0, 0, -7],
-			[4, 0, 0, -1, 0, 0, 0, 0],
+			[-5, -2, -3, -8, -7, -3, -2, -4],
+			[-1, -1, -1, -1, -1, -1, -1, -1],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 7, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 4, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[5, 2, 3, 8, 7, 3, 2, 4],
 		];
+
+		// this.board = [
+		// 	[0, 0, 0, 0, 0, 0, 0, -7],
+		// 	[4, 0, 0, 1, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 7, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 4, -1, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// ];
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
@@ -241,8 +241,13 @@ export class Game {
 		this.markLastMove(pieceRow, pieceCol, goToRow, goToCol);
 		this.handleEnPassant(pieceRow, goToRow, goToCol);
 
-		moveType = this.getGameStateWithMoveType(moveType);
+		// Check if the move is a pawn promotion
+		if (Math.abs(piece) === 1 && (goToRow === 0 || goToRow === 7)) {
+			this.promotePawn(goToRow, goToCol, piece, moveType);
+			return;
+		}
 
+		moveType = this.getGameStateWithMoveType(moveType);
 		this.makeMoveSound(moveType);
 		this.switchTurn();
 	}
@@ -284,6 +289,47 @@ export class Game {
 		if (movingPiece === -4 && pieceCol === 7) this.castlingRights.black.short = false;
 
 	}
+
+	promotePawn(row, col, piece, moveType) {
+		const color = piece > 0 ? "white" : "black";
+		const choices = [
+			{ name: "Queen", value: 8, img: `assets/pieces/${color}/${color}_queen.png` },
+			{ name: "Rook", value: 6, img: `assets/pieces/${color}/${color}_rook.png` },
+			{ name: "Bishop", value: 3, img: `assets/pieces/${color}/${color}_bishop.png` },
+			{ name: "Knight", value: 2, img: `assets/pieces/${color}/${color}_knight.png` }
+		];
+
+		const promotionDiv = document.createElement("div");
+		promotionDiv.id = "promotion-menu";
+		promotionDiv.classList.add("promotion-menu");
+
+		choices.forEach(choice => {
+			const btn = document.createElement("button");
+
+			const img = document.createElement("img");
+			img.src = choice.img;
+			img.alt = choice.name;
+			img.classList.add("promotion-img");
+
+			btn.appendChild(img);
+
+			btn.onclick = () => {
+				this.board[row][col] = piece > 0 ? choice.value : -choice.value;
+				document.body.removeChild(promotionDiv);
+
+				moveType = this.getGameStateWithMoveType(moveType);
+				this.makeMoveSound(moveType);
+				this.switchTurn();
+				this.renderBoard();
+			};
+
+			promotionDiv.appendChild(btn);
+		});
+
+		document.body.appendChild(promotionDiv);
+	}
+
+
 
 	executeMove(pieceRow, pieceCol, goToRow, goToCol) {
 		if (this.board[goToRow][goToCol] === 9) {

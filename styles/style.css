@@ -87,3 +87,28 @@ body {
 	transform: translate(-50%, -50%);
 	z-index: 2;
 }
+
+
+.promotion-menu {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: white;
+    border: 2px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	z-index: 100;
+}
+
+.promotion-menu button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.promotion-img {
+    width: 50px;
+    height: 50px;
+}
