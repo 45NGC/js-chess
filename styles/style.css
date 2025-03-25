@@ -90,21 +90,44 @@ body {
 
 
 .promotion-menu {
-    display: flex;
-    gap: 10px;
-    padding: 10px;
-    background: white;
-    border: 2px solid black;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-	z-index: 100;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-.promotion-menu button {
+.promotion-header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cancel-btn {
+    background: red;
+    color: white;
     border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.promotion-option {
     background: none;
+    border: none;
     cursor: pointer;
 }
 

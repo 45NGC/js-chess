@@ -30,27 +30,27 @@ export class Game {
 		// 	[1, 1, 1, 1, 1, 0, 1, 1],
 		// 	[5, 2, 3, 8, 7, 3, 2, 4],
 
-		this.board = [
-			[-5, -2, -3, -8, -7, -3, -2, -4],
-			[-1, -1, -1, -1, -1, -1, -1, -1],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[1, 1, 1, 1, 1, 1, 1, 1],
-			[5, 2, 3, 8, 7, 3, 2, 4],
-		];
-
 		// this.board = [
-		// 	[0, 0, 0, 0, 0, 0, 0, -7],
-		// 	[4, 0, 0, 1, 0, 0, 0, 0],
+		// 	[-5, -2, -3, -8, -7, -3, -2, -4],
+		// 	[-1, -1, -1, -1, -1, -1, -1, -1],
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, 7, 0, 0],
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 4, -1, 0, 0, 0, 0],
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[1, 1, 1, 1, 1, 1, 1, 1],
+		// 	[5, 2, 3, 8, 7, 3, 2, 4],
 		// ];
+
+		this.board = [
+			[0, 0, 0, 0, 0, 0, 0, -7],
+			[4, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 7, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 4, -1, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+		];
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
@@ -299,12 +299,38 @@ export class Game {
 			{ name: "Knight", value: 2, img: `assets/pieces/${color}/${color}_knight.png` }
 		];
 
+
+		//TODO: Put the menu code in another file
+		//TODO: Add animations to the menu options
+		
+		const existingMenu = document.getElementById("promotion-menu");
+		if (existingMenu) {
+			document.body.removeChild(existingMenu);
+		}
+
 		const promotionDiv = document.createElement("div");
 		promotionDiv.id = "promotion-menu";
 		promotionDiv.classList.add("promotion-menu");
 
+		const headerDiv = document.createElement("div");
+		headerDiv.classList.add("promotion-header");
+
+		const cancelButton = document.createElement("button");
+		cancelButton.innerText = "✖";
+		cancelButton.classList.add("cancel-btn");
+		cancelButton.onclick = () => {
+			document.body.removeChild(promotionDiv);
+			this.board[row][col] = 0;
+			this.board[row-(-piece)][col] = piece > 0 ? 1 : -1;
+			this.renderBoard();
+		};
+
+		headerDiv.appendChild(cancelButton);
+		promotionDiv.appendChild(headerDiv);
+
 		choices.forEach(choice => {
 			const btn = document.createElement("button");
+			btn.classList.add("promotion-option");
 
 			const img = document.createElement("img");
 			img.src = choice.img;
