@@ -30,27 +30,27 @@ export class Game {
 		// 	[1, 1, 1, 1, 1, 0, 1, 1],
 		// 	[5, 2, 3, 8, 7, 3, 2, 4],
 
-		// this.board = [
-		// 	[-5, -2, -3, -8, -7, -3, -2, -4],
-		// 	[-1, -1, -1, -1, -1, -1, -1, -1],
-		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[0, 0, 0, 0, 0, 0, 0, 0],
-		// 	[1, 1, 1, 1, 1, 1, 1, 1],
-		// 	[5, 2, 3, 8, 7, 3, 2, 4],
-		// ];
-
 		this.board = [
-			[0, 0, 0, 0, 0, 0, 0, -7],
-			[4, 0, 0, 1, 0, 0, 0, 0],
+			[-5, -2, -3, -8, -7, -3, -2, -4],
+			[-1, -1, -1, -1, -1, -1, -1, -1],
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 7, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 4, -1, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[5, 2, 3, 8, 7, 3, 2, 4],
 		];
+
+		// this.board = [
+		// 	[0, 0, 0, 0, 0, 0, 0, -7],
+		// 	[4, 0, 0, 1, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 7, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// 	[0, 0, 4, -1, 0, 0, 0, 0],
+		// 	[0, 0, 0, 0, 0, 0, 0, 0],
+		// ];
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
@@ -299,10 +299,6 @@ export class Game {
 			{ name: "Knight", value: 2, img: `assets/pieces/${color}/${color}_knight.png` }
 		];
 
-
-		//TODO: Put the menu code in another file
-		//TODO: Add animations to the menu options
-		
 		const existingMenu = document.getElementById("promotion-menu");
 		if (existingMenu) {
 			document.body.removeChild(existingMenu);
@@ -318,10 +314,14 @@ export class Game {
 		const cancelButton = document.createElement("button");
 		cancelButton.innerText = "✖";
 		cancelButton.classList.add("cancel-btn");
+
+		cancelButton.onmouseover = () => cancelButton.classList.add("hover");
+		cancelButton.onmouseout = () => cancelButton.classList.remove("hover");
+
 		cancelButton.onclick = () => {
 			document.body.removeChild(promotionDiv);
 			this.board[row][col] = 0;
-			this.board[row-(-piece)][col] = piece > 0 ? 1 : -1;
+			this.board[row - (-piece)][col] = piece > 0 ? 1 : -1;
 			this.renderBoard();
 		};
 
@@ -339,6 +339,9 @@ export class Game {
 
 			btn.appendChild(img);
 
+			btn.onmouseover = () => btn.classList.add("hover");
+			btn.onmouseout = () => btn.classList.remove("hover");
+
 			btn.onclick = () => {
 				this.board[row][col] = piece > 0 ? choice.value : -choice.value;
 				document.body.removeChild(promotionDiv);
@@ -354,6 +357,8 @@ export class Game {
 
 		document.body.appendChild(promotionDiv);
 	}
+
+
 
 
 

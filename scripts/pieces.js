@@ -159,6 +159,7 @@ export class Pieces {
 		}
 
 		// CASTLING
+		// TODO: there is a bug, if a player takes a rook the castle is steel available
 		if (!this.isKingInCheck(board)) {
 			const color = board[row][col] > 0 ? "white" : "black";
 
