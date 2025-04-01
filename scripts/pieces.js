@@ -21,6 +21,9 @@ export const PIECE_MAP = {
 
 export const CASTLING_PIECES = [4, -4, 5, -5, 7, -7];
 
+const ROOK_COLUMN_SHORT = 7;
+const ROOK_COLUMN_LONG = 0;
+
 const MOVES = {
 	king: [[0, 1], [1, 0], [-1, -1], [-1, 1], [-1, 0], [1, -1], [1, 1], [0, -1]],
 	queen: [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [0, 1], [-1, 0], [0, -1]],
@@ -159,13 +162,10 @@ export class Pieces {
 		}
 
 		// CASTLING
-		// TODO: there is a bug, if a player takes a rook the castle is steel available
 		if (!this.isKingInCheck(board)) {
 			const color = board[row][col] > 0 ? "white" : "black";
 
-			// Short
-			if (castlingRights[color].short) {
-				// Check if the squares in between are empty and not attacked
+			if (castlingRights[color].short && board[row][ROOK_COLUMN_SHORT] === (color === "white" ? 4 : -4)) {
 				if (
 					board[row][5] === 0 && board[row][6] === 0 &&
 					!this.isKingInCheckAfterMove(board, row, col, row, 5) &&
@@ -175,8 +175,7 @@ export class Pieces {
 				}
 			}
 
-			// Long
-			if (castlingRights[color].long) {
+			if (castlingRights[color].long && board[row][ROOK_COLUMN_LONG] === (color === "white" ? 5 : -5)) {
 				if (
 					board[row][1] === 0 && board[row][2] === 0 && board[row][3] === 0 &&
 					!this.isKingInCheckAfterMove(board, row, col, row, 2) &&
