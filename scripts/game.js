@@ -74,6 +74,32 @@ export class Game {
 		this.renderBoard();
 	}
 
+	restartGame(){
+		console.log(`CHESS GAME RESETED`);
+		this.turn = 1;
+
+		this.board = [
+			[-5, -2, -3, -8, -7, -3, -2, -4],
+			[-1, -1, -1, -1, -1, -1, -1, -1],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[5, 2, 3, 8, 7, 3, 2, 4],
+		];
+
+		this.availableSquares = [];
+		this.selectedPieceSquare = [];
+
+		this.castlingRights = {
+			white: { short: true, long: true },
+			black: { short: true, long: true }
+		};
+
+		this.renderBoard();
+	}
+
 	renderBoard() {
 		const cells = document.querySelectorAll(".cell");
 		cells.forEach(cell => {
@@ -357,10 +383,6 @@ export class Game {
 
 		document.body.appendChild(promotionDiv);
 	}
-
-
-
-
 
 	executeMove(pieceRow, pieceCol, goToRow, goToCol) {
 		if (this.board[goToRow][goToCol] === 9) {

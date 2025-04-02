@@ -7,6 +7,24 @@ body {
 	background-color: #2e2e2e;
 }
 
+#restart-button {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	background-color: #7d945d;
+	color: #013220;
+	font-weight: bold;
+	font-size: 18px;
+	border: 4px solid black;
+	padding: 5px 10px;
+	cursor: pointer;
+	transition: border-color 0.3s ease;
+}
+
+#restart-button:hover {
+	border-color: #f5f5dc;
+}
+
 .chess-board {
 	display: grid;
 	grid-template-columns: repeat(8, 60px);
@@ -67,7 +85,6 @@ body {
 	z-index: 0;
 }
 
-
 .white {
 	background-color: #eeeed5;
 }
@@ -87,7 +104,6 @@ body {
 	transform: translate(-50%, -50%);
 	z-index: 2;
 }
-
 
 .promotion-menu {
 	position: absolute;
@@ -111,25 +127,24 @@ body {
 	justify-content: center;
 }
 
-
 /* FIX : The 'x' inside the button looks a little bit off-center*/
 .cancel-btn {
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    line-height: 40px;
-    padding: 0;
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+	background: black;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	font-size: 20px;
+	font-weight: bold;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	line-height: 40px;
+	padding: 0;
+	transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 .cancel-btn:hover {
