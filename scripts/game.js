@@ -74,7 +74,7 @@ export class Game {
 		this.renderBoard();
 	}
 
-	restartGame(){
+	restartGame() {
 		console.log(`CHESS GAME RESETED`);
 		this.turn = 1;
 
@@ -252,6 +252,7 @@ export class Game {
 		const [pieceRow, pieceCol] = this.selectedPieceSquare;
 		const [goToRow, goToCol] = goToSquare;
 		const piece = this.board[pieceRow][pieceCol];
+		const goToSquareValue = this.board[goToRow][goToCol];
 
 		let moveType = this.determineMoveType(goToRow, goToCol);
 
@@ -269,7 +270,7 @@ export class Game {
 
 		// Check if the move is a pawn promotion
 		if (Math.abs(piece) === 1 && (goToRow === 0 || goToRow === 7)) {
-			this.promotePawn(goToRow, goToCol, piece, moveType);
+			this.promotePawn(goToRow, goToCol, pieceRow, pieceCol, goToSquareValue, piece, moveType);
 			return;
 		}
 
@@ -316,7 +317,10 @@ export class Game {
 
 	}
 
-	promotePawn(row, col, piece, moveType) {
+	// TODO:
+	// REFACTOR: Once I have the getPrevious position function (for the 'go back' button) it will not
+	// be neccesary to pass the goToSquareValue because I will be able to get it from the previous position
+	promotePawn(goToRow, goToCol, previousRow, previousCol, goToSquareValue, piece, moveType) {
 		const color = piece > 0 ? "white" : "black";
 		const choices = [
 			{ name: "Queen", value: 8, img: `assets/pieces/${color}/${color}_queen.png` },
@@ -346,8 +350,8 @@ export class Game {
 
 		cancelButton.onclick = () => {
 			document.body.removeChild(promotionDiv);
-			this.board[row][col] = 0;
-			this.board[row - (-piece)][col] = piece > 0 ? 1 : -1;
+			this.board[goToRow][goToCol] = goToSquareValue;
+			this.board[previousRow][previousCol] = piece > 0 ? 1 : -1;
 			this.renderBoard();
 		};
 
@@ -369,7 +373,7 @@ export class Game {
 			btn.onmouseout = () => btn.classList.remove("hover");
 
 			btn.onclick = () => {
-				this.board[row][col] = piece > 0 ? choice.value : -choice.value;
+				this.board[goToRow][goToCol] = piece > 0 ? choice.value : -choice.value;
 				document.body.removeChild(promotionDiv);
 
 				moveType = this.getGameStateWithMoveType(moveType);
