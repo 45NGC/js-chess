@@ -7,3 +7,7 @@ game.startGame();
 document.getElementById("restart-button").addEventListener("click", () => {
     game.restartGame();
 });
+
+document.getElementById("go-back-button").addEventListener("click", () => {
+    game.goBackPosition();
+});

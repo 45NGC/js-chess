@@ -52,6 +52,8 @@ export class Game {
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
 		// ];
 
+		this.positionHistory = [];
+
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
 
@@ -123,6 +125,17 @@ export class Game {
 					}
 				}
 			}
+		}
+	}
+
+	goBackPosition() {
+		if (this.positionHistory.length > 1) {
+			this.positionHistory.pop(); // quitamos el estado actual
+			const lastState = this.positionHistory[this.positionHistory.length - 1];
+			this.board = lastState.board.map(row => [...row]);
+			this.turn = lastState.turn;
+			this.castlingRights = lastState.castlingRights;
+			this.renderBoard();
 		}
 	}
 
@@ -247,6 +260,14 @@ export class Game {
 	}
 
 	movePiece(goToSquare) {
+
+		this.positionHistory.push({
+			board: this.board.map(row => [...row]),
+			turn: this.turn,
+			castlingRights: this.castlingRights
+		});
+
+
 		this.hideElements('.lastMoveMark');
 
 		const [pieceRow, pieceCol] = this.selectedPieceSquare;
