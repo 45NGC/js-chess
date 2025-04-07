@@ -129,14 +129,21 @@ export class Game {
 	}
 
 	goBackPosition() {
-		if (this.positionHistory.length > 1) {
-			this.positionHistory.pop(); // quitamos el estado actual
-			const lastState = this.positionHistory[this.positionHistory.length - 1];
-			this.board = lastState.board.map(row => [...row]);
-			this.turn = lastState.turn;
-			this.castlingRights = lastState.castlingRights;
-			this.renderBoard();
-		}
+		const lastState = this.getPreviousPosition();
+		this.board = lastState.board.map(row => [...row]);
+		this.turn = lastState.turn;
+		this.castlingRights = lastState.castlingRights;
+		this.renderBoard();
+	}
+
+	getPreviousPosition(){
+		
+		// only to allow one retreat:
+		return this.positionHistory[this.positionHistory.length-1];
+
+		//TODO: Create a new object called positionHistory for been able to retreat more than 1 retreat :
+		// The object should have 3 arrays 1 for positions one for turns and one for castling rights
+		//return this.positionHistory[this.positionHistory.positions.indexOf(this.board) - 1];
 	}
 
 	handleMouseOver(event) {
@@ -340,7 +347,8 @@ export class Game {
 
 	// TODO:
 	// REFACTOR: Once I have the getPrevious position function (for the 'go back' button) it will not
-	// be neccesary to pass the goToSquareValue because I will be able to get it from the previous position
+	// be neccesary to pass the goToSquareValue because I will be able to get it from the previous position 
+	// getPreviousPosition()
 	promotePawn(goToRow, goToCol, previousRow, previousCol, goToSquareValue, piece, moveType) {
 		const color = piece > 0 ? "white" : "black";
 		const choices = [
