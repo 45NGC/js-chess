@@ -52,7 +52,12 @@ export class Game {
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
 		// ];
 
-		this.positionHistory = [];
+		this.positionHistory = {
+			positions: [],
+			turns: [],
+			castlingRights: []
+		};
+
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
@@ -136,14 +141,27 @@ export class Game {
 		this.renderBoard();
 	}
 
-	getPreviousPosition(){
-		
-		// only to allow one retreat:
-		return this.positionHistory[this.positionHistory.length-1];
+	getPreviousPosition() {
 
-		//TODO: Create a new object called positionHistory for been able to retreat more than 1 retreat :
-		// The object should have 3 arrays 1 for positions one for turns and one for castling rights
-		//return this.positionHistory[this.positionHistory.positions.indexOf(this.board) - 1];
+		// only to allow one retreat:
+		// return this.positionHistory.positions[this.positionHistory.positions.length - 1];
+
+		const lastIndex = this.positionHistory.positions.length - 1;
+
+		if (lastIndex < 0) {
+			console.warn("YOU CAN NOT UNDO MORE MOVES");
+			return {
+				board: this.board,
+				turn: this.turn,
+				castlingRights: this.castlingRights
+			};
+		}
+
+		const board = this.positionHistory.positions.pop();
+		const turn = this.positionHistory.turns.pop();
+		const castlingRights = this.positionHistory.castlingRights.pop();
+
+		return { board, turn, castlingRights };
 	}
 
 	handleMouseOver(event) {
@@ -268,11 +286,14 @@ export class Game {
 
 	movePiece(goToSquare) {
 
-		this.positionHistory.push({
-			board: this.board.map(row => [...row]),
-			turn: this.turn,
-			castlingRights: this.castlingRights
-		});
+		this.positionHistory.positions.push(this.board.map(row => [...row]));
+		this.positionHistory.turns.push(this.turn);
+
+		// Save a copy of the current castling rights to the history, so future
+		// changes to 'castlingRights' do not affect previously stored data
+		this.positionHistory.castlingRights.push({ ...this.castlingRights });
+
+
 
 
 		this.hideElements('.lastMoveMark');
