@@ -379,6 +379,11 @@ export class Game {
 			{ name: "Knight", value: 2, img: `assets/pieces/${color}/${color}_knight.png` }
 		];
 
+
+		//TODO:
+		// BUG: If the promotion menu is active when the user clicks the reset game button,
+		// the menu remains visible and the player can still perform a promotion.
+
 		const existingMenu = document.getElementById("promotion-menu");
 		if (existingMenu) {
 			document.body.removeChild(existingMenu);
