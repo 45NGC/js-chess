@@ -12,7 +12,7 @@ body {
 	top: 10px;
 	left: 10px;
 	background-color: #7d945d;
-	color: #013220;
+	color: black;
 	font-weight: bold;
 	font-size: 18px;
 	border: 4px solid black;
@@ -23,6 +23,31 @@ body {
 
 #restart-button:hover {
 	border-color: #f5f5dc;
+}
+
+#go-back-button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: #7d945d;;
+	color: #220101;
+	font-weight: bold;
+	font-size: 18px;
+	border: 4px solid black;
+	padding: 5px 10px;
+	cursor: pointer;
+	transition: border-color 0.3s ease;
+}
+
+#go-back-button:hover {
+	border-color: #f5f5dc;
+	/*background-color: #945d5d;*/
+}
+
+#go-back-button img {
+	width: 55px;
+	height: 55px;
+	object-fit: contain;
 }
 
 .chess-board {
