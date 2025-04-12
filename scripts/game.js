@@ -83,6 +83,11 @@ export class Game {
 
 	restartGame() {
 		console.log(`CHESS GAME RESETED`);
+
+		// In case the promotion menu is active when the user presses
+		// the restar-button we must close it
+		this.closePawnPromotionMenu();
+		
 		this.turn = 1;
 
 		this.board = [
@@ -95,6 +100,12 @@ export class Game {
 			[1, 1, 1, 1, 1, 1, 1, 1],
 			[5, 2, 3, 8, 7, 3, 2, 4],
 		];
+
+		this.positionHistory = {
+			positions: [],
+			turns: [],
+			castlingRights: []
+		};
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
@@ -134,28 +145,27 @@ export class Game {
 	}
 
 	goBackPosition() {
-		const lastState = this.getPreviousPosition();
-		this.board = lastState.board.map(row => [...row]);
-		this.turn = lastState.turn;
-		this.castlingRights = lastState.castlingRights;
-		this.renderBoard();
+		// In case the promotion menu is active when the user presses
+		// the go-back-button we must close it
+		this.closePawnPromotionMenu();
+
+		const lastIndex = this.positionHistory.positions.length - 1;
+
+		if (lastIndex < 0) {
+			console.warn("YOU CAN NOT UNDO MORE MOVES");
+		} else {
+			const lastState = this.getPreviousPosition();
+			this.board = lastState.board.map(row => [...row]);
+			this.turn = lastState.turn;
+			this.castlingRights = lastState.castlingRights;
+			this.renderBoard();
+		}
 	}
 
 	getPreviousPosition() {
 
 		// only to allow one retreat:
 		// return this.positionHistory.positions[this.positionHistory.positions.length - 1];
-
-		const lastIndex = this.positionHistory.positions.length - 1;
-
-		if (lastIndex < 0) {
-			console.warn("YOU CAN NOT UNDO MORE MOVES");
-			return {
-				board: this.board,
-				turn: this.turn,
-				castlingRights: this.castlingRights
-			};
-		}
 
 		const board = this.positionHistory.positions.pop();
 		const turn = this.positionHistory.turns.pop();
@@ -366,10 +376,6 @@ export class Game {
 
 	}
 
-	// TODO:
-	// REFACTOR: Once I have the getPrevious position function (for the 'go back' button) it will not
-	// be neccesary to pass the goToSquareValue because I will be able to get it from the previous position 
-	// getPreviousPosition()
 	promotePawn(goToRow, goToCol, previousRow, previousCol, goToSquareValue, piece, moveType) {
 		const color = piece > 0 ? "white" : "black";
 		const choices = [
@@ -378,11 +384,6 @@ export class Game {
 			{ name: "Bishop", value: 3, img: `assets/pieces/${color}/${color}_bishop.png` },
 			{ name: "Knight", value: 2, img: `assets/pieces/${color}/${color}_knight.png` }
 		];
-
-
-		//TODO:
-		// BUG: If the promotion menu is active when the user clicks the reset game button,
-		// the menu remains visible and the player can still perform a promotion.
 
 		const existingMenu = document.getElementById("promotion-menu");
 		if (existingMenu) {
@@ -441,6 +442,13 @@ export class Game {
 		});
 
 		document.body.appendChild(promotionDiv);
+	}
+
+	closePawnPromotionMenu(){
+		const promotionMenu = document.getElementById("promotion-menu");
+		if (promotionMenu) {
+			document.body.removeChild(promotionMenu);
+		}
 	}
 
 	executeMove(pieceRow, pieceCol, goToRow, goToCol) {
