@@ -11,3 +11,7 @@ document.getElementById("restart-button").addEventListener("click", () => {
 document.getElementById("go-back-button").addEventListener("click", () => {
     game.goBackPosition();
 });
+
+document.getElementById("rotate-board-button").addEventListener("click", () => {
+    game.rotateBoard();
+});

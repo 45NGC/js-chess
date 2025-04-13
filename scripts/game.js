@@ -61,6 +61,7 @@ export class Game {
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
+		this.rotatedBoard = false;
 
 		this.castlingRights = {
 			white: { short: true, long: true },
@@ -77,43 +78,6 @@ export class Game {
 			div.addEventListener('mouseover', this.handleMouseOver.bind(this));
 			div.addEventListener('click', this.handleMouseClick.bind(this));
 		});
-
-		this.renderBoard();
-	}
-
-	restartGame() {
-		console.log(`CHESS GAME RESETED`);
-
-		// In case the promotion menu is active when the user presses
-		// the restar-button we must close it
-		this.closePawnPromotionMenu();
-		
-		this.turn = 1;
-
-		this.board = [
-			[-5, -2, -3, -8, -7, -3, -2, -4],
-			[-1, -1, -1, -1, -1, -1, -1, -1],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0],
-			[1, 1, 1, 1, 1, 1, 1, 1],
-			[5, 2, 3, 8, 7, 3, 2, 4],
-		];
-
-		this.positionHistory = {
-			positions: [],
-			turns: [],
-			castlingRights: []
-		};
-
-		this.availableSquares = [];
-		this.selectedPieceSquare = [];
-
-		this.castlingRights = {
-			white: { short: true, long: true },
-			black: { short: true, long: true }
-		};
 
 		this.renderBoard();
 	}
@@ -144,6 +108,46 @@ export class Game {
 		}
 	}
 
+	// Button functions:
+
+	restartGame() {
+		console.log(`CHESS GAME RESETED`);
+
+		// In case the promotion menu is active when the user presses
+		// the restar-button we must close it
+		this.closePawnPromotionMenu();
+
+		this.turn = 1;
+
+		this.board = [
+			[-5, -2, -3, -8, -7, -3, -2, -4],
+			[-1, -1, -1, -1, -1, -1, -1, -1],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[5, 2, 3, 8, 7, 3, 2, 4],
+		];
+
+		this.positionHistory = {
+			positions: [],
+			turns: [],
+			castlingRights: []
+		};
+
+		this.availableSquares = [];
+		this.selectedPieceSquare = [];
+		this.rotatedBoard = false;
+
+		this.castlingRights = {
+			white: { short: true, long: true },
+			black: { short: true, long: true }
+		};
+
+		this.renderBoard();
+	}
+
 	goBackPosition() {
 		// In case the promotion menu is active when the user presses
 		// the go-back-button we must close it
@@ -160,6 +164,28 @@ export class Game {
 			this.castlingRights = lastState.castlingRights;
 			this.renderBoard();
 		}
+	}
+
+	rotateBoard() {
+		console.log("BOARD ROTATED");
+
+		//TODO: This function should also rotate all the positions in the positionHistory variable
+
+		const size = this.board.length;
+		const newBoard = [];
+
+		for (let row = 0; row < size; row++) {
+			newBoard[row] = [];
+			for (let col = 0; col < size; col++) {
+				newBoard[row][col] = this.board[size - 1 - row][size - 1 - col];
+			}
+		}
+
+		this.rotatedBoard = !this.rotatedBoard;
+		console.log(this.rotatedBoard);
+
+		this.board = newBoard;
+		this.renderBoard();
 	}
 
 	getPreviousPosition() {
@@ -213,7 +239,7 @@ export class Game {
 		const squareImage = clickedSquare.querySelector('img');
 		if (squareImage) {
 
-			const pieces = new Pieces(this.turn);
+			const pieces = new Pieces(this.turn, this.rotatedBoard);
 			const squareImageId = squareImage.getAttribute('id');
 
 			// Only calls 'getPieceAvailableMoves' if the selected piece is of the corresponding color
@@ -278,7 +304,7 @@ export class Game {
 
 				if (piece !== 0 && Math.sign(piece) === turn) {
 					const pieceType = PIECE_MAP[piece.toString()];
-					const pieces = new Pieces(turn);
+					const pieces = new Pieces(turn, this.rotatedBoard);
 
 					if (pieceType) {
 						const availableMoves = pieces.getPieceAvailableMoves(board, pieceType, [row, col], this.castlingRights, false);
@@ -444,7 +470,7 @@ export class Game {
 		document.body.appendChild(promotionDiv);
 	}
 
-	closePawnPromotionMenu(){
+	closePawnPromotionMenu() {
 		const promotionMenu = document.getElementById("promotion-menu");
 		if (promotionMenu) {
 			document.body.removeChild(promotionMenu);
@@ -489,7 +515,7 @@ export class Game {
 	// Checks the state of the game and changes the moveType variable if necessary
 	getGameStateWithMoveType(previousMoveType) {
 		const moves = this.getAllAvailableMoves(this.board, this.turn * -1);
-		const opponentPieces = new Pieces(this.turn * -1);
+		const opponentPieces = new Pieces(this.turn * -1, this.rotatedBoard);
 		const inCheck = opponentPieces.isKingInCheck(this.board);
 
 		if (Object.keys(moves).length === 0) {

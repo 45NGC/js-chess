@@ -34,10 +34,26 @@ const MOVES = {
 
 export class Pieces {
 
-	constructor(turn) {
+	constructor(turn, rotatedBoard) {
 		this.turn = turn;
+		this.rotatedBoard = rotatedBoard;
 		this.playerPieces = this.getPlayerPieces(turn);
 		this.opponentPieces = this.getPlayerPieces(-turn);
+
+		//TODO: fix pawn logic + castling logic when the board is rotated
+
+		// Pawn logic:
+		this.initial_white_pawn_row = rotatedBoard ? 6 : 1;
+		this.initial_black_pawn_row = rotatedBoard ? 1 : 6;
+		this.turnChanger = rotatedBoard ? -1 : 1;
+
+		// Castling logic:
+		this.rook_column_short       = rotatedBoard ? 7 : 0;
+		this.rook_column_long        = rotatedBoard ? 0 : 7;
+		this.short_castling_square  = rotatedBoard ? 2 : 6;
+		this.long_castling_square   = rotatedBoard ? 6 : 2;
+
+		this.check_castling_squares = rotatedBoard ? [5, 6, 2, 3] : [2, 3, 5, 6];
 	}
 
 	//TODO: add parameter turn to this function and refactor all the code to be more compact
@@ -449,11 +465,6 @@ export class Pieces {
 
 	getPlayerPieces(turn) {
 		return turn === 1 ? [1, 2, 3, 4, 5, 6, 7, 8] : [-1, -2, -3, -4, -5, -6, -7, -8];
-	}
-
-	// In case any move is made we delete the available en passant squares because they only last one turn
-	deleteEnPassantSquares(board) {
-
 	}
 
 	// Retrieves the key corresponding to a given value in the provided map
