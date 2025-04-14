@@ -48,12 +48,11 @@ export class Pieces {
 		this.turnChanger = rotatedBoard ? -1 : 1;
 
 		// Castling logic:
-		this.rook_column_short = rotatedBoard ? 7 : 0;
-		this.rook_column_long = rotatedBoard ? 0 : 7;
-		this.short_castling_square = rotatedBoard ? 2 : 6;
-		this.long_castling_square = rotatedBoard ? 6 : 2;
+		this.rookColumnShort = rotatedBoard ? 0 : 7;
+		this.rookColumnLong = rotatedBoard ? 7 : 0;
 
-		this.check_castling_squares = rotatedBoard ? [5, 6, 2, 3] : [2, 3, 5, 6];
+		this.shortCastlingSquaresToCheck = rotatedBoard ? [2, 1] : [5, 6];
+		this.longCastlingSquaresToCheck = rotatedBoard ? [6, 5, 4] : [1, 2, 3];
 	}
 
 	getPieceAvailableMoves(board, squareImageId, square, castlingRights, getAttackedSquares) {
@@ -175,27 +174,31 @@ export class Pieces {
 			}
 		}
 
+		//TODO: Refactor castling code
 		// CASTLING
 		if (!this.isKingInCheck(board)) {
 			const color = board[row][col] > 0 ? "white" : "black";
 
-			if (castlingRights[color].short && board[row][ROOK_COLUMN_SHORT] === (color === "white" ? 4 : -4)) {
+			if (castlingRights[color].short && board[row][this.rookColumnShort] === (color === "white" ? 4 : -4)) {
 				if (
-					board[row][5] === 0 && board[row][6] === 0 &&
-					!this.isKingInCheckAfterMove(board, row, col, row, 5) &&
-					!this.isKingInCheckAfterMove(board, row, col, row, 6)
+					board[row][this.shortCastlingSquaresToCheck[0]] === 0 && 
+					board[row][this.shortCastlingSquaresToCheck[1]] === 0 &&
+					!this.isKingInCheckAfterMove(board, row, col, row, this.shortCastlingSquaresToCheck[0]) &&
+					!this.isKingInCheckAfterMove(board, row, col, row, this.shortCastlingSquaresToCheck[1])
 				) {
-					availableSquares.push([row, 6]);
+					availableSquares.push([row, this.shortCastlingSquaresToCheck[1]]);
 				}
 			}
 
-			if (castlingRights[color].long && board[row][ROOK_COLUMN_LONG] === (color === "white" ? 5 : -5)) {
+			if (castlingRights[color].long && board[row][this.rookColumnLong] === (color === "white" ? 5 : -5)) {
 				if (
-					board[row][1] === 0 && board[row][2] === 0 && board[row][3] === 0 &&
-					!this.isKingInCheckAfterMove(board, row, col, row, 2) &&
-					!this.isKingInCheckAfterMove(board, row, col, row, 3)
+					board[row][this.longCastlingSquaresToCheck[0]] === 0 && 
+					board[row][this.longCastlingSquaresToCheck[1]] === 0 && 
+					board[row][this.longCastlingSquaresToCheck[2]] === 0 &&
+					!this.isKingInCheckAfterMove(board, row, col, row, this.longCastlingSquaresToCheck[1]) &&
+					!this.isKingInCheckAfterMove(board, row, col, row, this.longCastlingSquaresToCheck[2])
 				) {
-					availableSquares.push([row, 2]);
+					availableSquares.push([row, this.longCastlingSquaresToCheck[1]]);
 				}
 			}
 

@@ -373,32 +373,50 @@ export class Game {
 		return (piece === 7 || piece === -7) && Math.abs(goToCol - pieceCol) === 2;
 	}
 
+	//TODO: Refactor this function
 	performCastling(goToRow, goToCol, piece) {
-		if (goToCol === 6) {
-			this.board[goToRow][5] = piece > 0 ? 4 : -4;
-			this.board[goToRow][7] = 0;
-		}
-		if (goToCol === 2) {
-			this.board[goToRow][3] = piece > 0 ? 4 : -4;
-			this.board[goToRow][0] = 0;
+		if(this.rotatedBoard){
+
+			//SHORT
+			if (goToCol === 1) {
+				this.board[goToRow][2] = piece > 0 ? 4 : -4;
+				this.board[goToRow][0] = 0;
+			}
+			//LONG
+			if (goToCol === 5) {
+				this.board[goToRow][4] = piece > 0 ? 4 : -4;
+				this.board[goToRow][7] = 0;
+			}
+
+		}else{
+
+			//SHORT
+			if (goToCol === 6) {
+				this.board[goToRow][5] = piece > 0 ? 4 : -4;
+				this.board[goToRow][7] = 0;
+			}
+			//LONG
+			if (goToCol === 2) {
+				this.board[goToRow][3] = piece > 0 ? 4 : -4;
+				this.board[goToRow][0] = 0;
+			}
+
 		}
 	}
 
 	checkCastlingRights(movingPiece) {
-
-		const pieceCol = this.selectedPieceSquare[1];
 
 		// If the king moves we loose both castling rights
 		if (movingPiece === 7) this.castlingRights.white = { short: false, long: false };
 		if (movingPiece === -7) this.castlingRights.black = { short: false, long: false };
 
 		// If the long rook moves we loose long castling
-		if (movingPiece === 5 && pieceCol === 0) this.castlingRights.white.long = false;
-		if (movingPiece === -5 && pieceCol === 0) this.castlingRights.black.long = false;
+		if (movingPiece === 5) this.castlingRights.white.long = false;
+		if (movingPiece === -5) this.castlingRights.black.long = false;
 
 		// If the short rook moves we loose short castling
-		if (movingPiece === 4 && pieceCol === 7) this.castlingRights.white.short = false;
-		if (movingPiece === -4 && pieceCol === 7) this.castlingRights.black.short = false;
+		if (movingPiece === 4) this.castlingRights.white.short = false;
+		if (movingPiece === -4) this.castlingRights.black.short = false;
 
 	}
 
