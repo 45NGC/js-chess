@@ -43,20 +43,18 @@ export class Pieces {
 		//TODO: fix pawn logic + castling logic when the board is rotated
 
 		// Pawn logic:
-		this.initial_white_pawn_row = rotatedBoard ? 6 : 1;
-		this.initial_black_pawn_row = rotatedBoard ? 1 : 6;
+		this.whitePawnInitialRow = rotatedBoard ? 1 : 6;
+		this.blackPawnInitialRow = rotatedBoard ? 6 : 1;
 		this.turnChanger = rotatedBoard ? -1 : 1;
 
 		// Castling logic:
-		this.rook_column_short       = rotatedBoard ? 7 : 0;
-		this.rook_column_long        = rotatedBoard ? 0 : 7;
-		this.short_castling_square  = rotatedBoard ? 2 : 6;
-		this.long_castling_square   = rotatedBoard ? 6 : 2;
+		this.rook_column_short = rotatedBoard ? 7 : 0;
+		this.rook_column_long = rotatedBoard ? 0 : 7;
+		this.short_castling_square = rotatedBoard ? 2 : 6;
+		this.long_castling_square = rotatedBoard ? 6 : 2;
 
 		this.check_castling_squares = rotatedBoard ? [5, 6, 2, 3] : [2, 3, 5, 6];
 	}
-
-	//TODO: add parameter turn to this function and refactor all the code to be more compact
 
 	getPieceAvailableMoves(board, squareImageId, square, castlingRights, getAttackedSquares) {
 
@@ -283,9 +281,9 @@ export class Pieces {
 			}
 		};
 
-		const isInitialRow = (row === 1 && this.turn === -1) || (row === 6 && this.turn === 1);
-		const forwardMove = row - this.turn;
-		const doubleForwardMove = row - this.turn * 2;
+		const isInitialRow = (row === this.blackPawnInitialRow && this.turn === -1) || (row === this.whitePawnInitialRow && this.turn === 1);
+		const forwardMove = row - (this.turn * this.turnChanger);
+		const doubleForwardMove = row - (this.turn * this.turnChanger) * 2;
 
 		// First push
 		if (isInitialRow && board[doubleForwardMove]?.[col] === 0 && board[forwardMove]?.[col] === 0) {
