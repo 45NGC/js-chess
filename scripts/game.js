@@ -182,7 +182,6 @@ export class Game {
 		}
 
 		this.rotatedBoard = !this.rotatedBoard;
-		console.log(this.rotatedBoard);
 
 		this.board = newBoard;
 		this.renderBoard();

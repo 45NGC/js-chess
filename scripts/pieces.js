@@ -21,9 +21,6 @@ export const PIECE_MAP = {
 
 export const CASTLING_PIECES = [4, -4, 5, -5, 7, -7];
 
-const ROOK_COLUMN_SHORT = 7;
-const ROOK_COLUMN_LONG = 0;
-
 const MOVES = {
 	king: [[0, 1], [1, 0], [-1, -1], [-1, 1], [-1, 0], [1, -1], [1, 1], [0, -1]],
 	queen: [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [0, 1], [-1, 0], [0, -1]],
@@ -39,8 +36,6 @@ export class Pieces {
 		this.rotatedBoard = rotatedBoard;
 		this.playerPieces = this.getPlayerPieces(turn);
 		this.opponentPieces = this.getPlayerPieces(-turn);
-
-		//TODO: fix pawn logic + castling logic when the board is rotated
 
 		// Pawn logic:
 		this.whitePawnInitialRow = rotatedBoard ? 1 : 6;
