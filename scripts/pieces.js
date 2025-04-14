@@ -307,7 +307,7 @@ export class Pieces {
 		const attackedSquares = [];
 
 		for (const colMove of [-1, 1]) {
-			const targetRow = square[0] + this.turn;
+			const targetRow = square[0] + (this.turn * this.turnChanger);
 			const targetCol = square[1] + colMove;
 
 			if (board[targetRow]?.[targetCol] !== undefined) {
