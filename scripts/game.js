@@ -168,22 +168,25 @@ export class Game {
 
 	rotateBoard() {
 		console.log("BOARD ROTATED");
-
-		//TODO: This function should also rotate all the positions in the positionHistory variable
-
+	
 		const size = this.board.length;
-		const newBoard = [];
-
-		for (let row = 0; row < size; row++) {
-			newBoard[row] = [];
-			for (let col = 0; col < size; col++) {
-				newBoard[row][col] = this.board[size - 1 - row][size - 1 - col];
+		const rotateBoardMatrix = (matrix) => {
+			const newMatrix = [];
+			for (let row = 0; row < size; row++) {
+				newMatrix[row] = [];
+				for (let col = 0; col < size; col++) {
+					newMatrix[row][col] = matrix[size - 1 - row][size - 1 - col];
+				}
 			}
-		}
-
+			return newMatrix;
+		};
+	
+		this.board = rotateBoardMatrix(this.board);
+	
+		// Rotate all positions of the positionHistory object:
+		this.positionHistory.positions = this.positionHistory.positions.map(pos => rotateBoardMatrix(pos));
+	
 		this.rotatedBoard = !this.rotatedBoard;
-
-		this.board = newBoard;
 		this.renderBoard();
 	}
 
