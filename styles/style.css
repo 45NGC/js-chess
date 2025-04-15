@@ -50,6 +50,31 @@ body {
 	object-fit: contain;
 }
 
+#rotate-board-button {
+	position: absolute;
+	top: 100px;
+	right: 10px;
+	background-color: #7d945d;;
+	color: #220101;
+	font-weight: bold;
+	font-size: 18px;
+	border: 4px solid black;
+	padding: 5px 10px;
+	cursor: pointer;
+	transition: border-color 0.3s ease;
+}
+
+#rotate-board-button:hover {
+	border-color: #f5f5dc;
+	/*background-color: #945d5d;*/
+}
+
+#rotate-board-button img {
+	width: 55px;
+	height: 55px;
+	object-fit: contain;
+}
+
 .chess-board {
 	display: grid;
 	grid-template-columns: repeat(8, 60px);
