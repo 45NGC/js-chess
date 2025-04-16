@@ -375,36 +375,26 @@ export class Game {
 		return (piece === 7 || piece === -7) && Math.abs(goToCol - pieceCol) === 2;
 	}
 
-	//TODO: Refactor this function
 	performCastling(goToRow, goToCol, piece) {
-		if(this.rotatedBoard){
-
-			//SHORT
-			if (goToCol === 1) {
-				this.board[goToRow][2] = piece > 0 ? 4 : -4;
-				this.board[goToRow][0] = 0;
+		const rookValue = piece > 0 ? 4 : -4;
+	
+		const castlingMoves = this.rotatedBoard
+			? {
+				1: { rookColFrom: 0, rookColTo: 2 }, // SHORT
+				5: { rookColFrom: 7, rookColTo: 4 }  // LONG
 			}
-			//LONG
-			if (goToCol === 5) {
-				this.board[goToRow][4] = piece > 0 ? 4 : -4;
-				this.board[goToRow][7] = 0;
-			}
-
-		}else{
-
-			//SHORT
-			if (goToCol === 6) {
-				this.board[goToRow][5] = piece > 0 ? 4 : -4;
-				this.board[goToRow][7] = 0;
-			}
-			//LONG
-			if (goToCol === 2) {
-				this.board[goToRow][3] = piece > 0 ? 4 : -4;
-				this.board[goToRow][0] = 0;
-			}
-
+			: {
+				6: { rookColFrom: 7, rookColTo: 5 }, // SHORT
+				2: { rookColFrom: 0, rookColTo: 3 }  // LONG
+			};
+	
+		const move = castlingMoves[goToCol];
+		if (move) {
+			this.board[goToRow][move.rookColTo] = rookValue;
+			this.board[goToRow][move.rookColFrom] = 0;
 		}
 	}
+	
 
 	checkCastlingRights(movingPiece) {
 
