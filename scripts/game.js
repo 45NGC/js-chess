@@ -63,6 +63,12 @@ export class Game {
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
+
+		// While the user performs a promotion the rotate-board button must be disabled
+		// because if the user presses the button while the promotion menu is active it
+		// does not work how it should
+		this.disableRotateBoardButton = false;
+
 		this.rotatedBoard = false;
 
 		this.castlingRights = {
@@ -110,7 +116,7 @@ export class Game {
 		}
 	}
 
-	// Button functions:
+	// Button functions :
 
 	restartGame() {
 		console.log(`CHESS GAME RESETED`);
@@ -140,6 +146,7 @@ export class Game {
 
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
+		this.disableRotateBoardButton = false;
 		this.rotatedBoard = false;
 
 		this.castlingRights = {
@@ -169,27 +176,34 @@ export class Game {
 	}
 
 	rotateBoard() {
-		console.log("BOARD ROTATED");
-	
-		const size = this.board.length;
-		const rotateBoardMatrix = (matrix) => {
-			const newMatrix = [];
-			for (let row = 0; row < size; row++) {
-				newMatrix[row] = [];
-				for (let col = 0; col < size; col++) {
-					newMatrix[row][col] = matrix[size - 1 - row][size - 1 - col];
+		
+		if(!this.disableRotateBoardButton){
+
+			console.log("BOARD ROTATED");
+
+			const size = this.board.length;
+			const rotateBoardMatrix = (matrix) => {
+				const newMatrix = [];
+				for (let row = 0; row < size; row++) {
+					newMatrix[row] = [];
+					for (let col = 0; col < size; col++) {
+						newMatrix[row][col] = matrix[size - 1 - row][size - 1 - col];
+					}
 				}
-			}
-			return newMatrix;
-		};
+				return newMatrix;
+			};
 	
-		this.board = rotateBoardMatrix(this.board);
-	
-		// Rotate all positions of the positionHistory object:
-		this.positionHistory.positions = this.positionHistory.positions.map(pos => rotateBoardMatrix(pos));
-	
-		this.rotatedBoard = !this.rotatedBoard;
-		this.renderBoard();
+			this.board = rotateBoardMatrix(this.board);
+		
+			// Rotate all positions of the positionHistory object:
+			this.positionHistory.positions = this.positionHistory.positions.map(pos => rotateBoardMatrix(pos));
+		
+			this.rotatedBoard = !this.rotatedBoard;
+			this.renderBoard();
+
+		}else{
+			console.log("CAN NOT USE THIS BUTTON WHILE A PAWN PROMOTION IS IN PROCESS");
+		}
 	}
 
 	getPreviousPosition() {
@@ -203,6 +217,8 @@ export class Game {
 
 		return { board, turn, castlingRights };
 	}
+
+	// Mouse functions :
 
 	handleMouseOver(event) {
 		const squareId = event.currentTarget.id;
@@ -258,6 +274,8 @@ export class Game {
 
 		}
 	}
+
+	// Game functions :
 
 	showAvailableSquares(coordinatesArray) {
 
@@ -423,6 +441,8 @@ export class Game {
 			{ name: "Knight", value: 2, img: `assets/pieces/${color}/${color}_knight.png` }
 		];
 
+		this.disableRotateBoardButton = true;
+
 		const existingMenu = document.getElementById("promotion-menu");
 		if (existingMenu) {
 			document.body.removeChild(existingMenu);
@@ -446,6 +466,12 @@ export class Game {
 			document.body.removeChild(promotionDiv);
 			this.board[goToRow][goToCol] = goToSquareValue;
 			this.board[previousRow][previousCol] = piece > 0 ? 1 : -1;
+			this.disableRotateBoardButton = false;
+
+			// Take the position of the position history:
+			this.positionHistory.positions.pop();
+			this.positionHistory.turns.pop();
+			this.positionHistory.castlingRights.pop();
 			this.renderBoard();
 		};
 
@@ -472,6 +498,7 @@ export class Game {
 
 				moveType = this.getGameStateWithMoveType(moveType);
 				this.makeMoveSound(moveType);
+				this.disableRotateBoardButton = false;
 				this.switchTurn();
 				this.renderBoard();
 			};
