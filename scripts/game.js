@@ -4,6 +4,8 @@ import { Pieces, PIECE_MAP, CASTLING_PIECES } from "./pieces.js";
 
 const MOVE_SOUND = new Audio('assets/sound/move.mp3');
 const CAPTURE_SOUND = new Audio('assets/sound/capture.mp3');
+const CHECK_SOUND = new Audio('assets/sound/check.mp3');
+const END_SOUND = new Audio('assets/sound/end.mp3');
 
 
 export class Game {
@@ -541,7 +543,6 @@ export class Game {
 		return previousMoveType;
 	}
 
-	//TODO: Add check, mate and draw sounds
 	makeMoveSound(moveType) {
 		switch (moveType) {
 
@@ -554,15 +555,21 @@ export class Game {
 				break;
 
 			case 2:
-				console.log(`CHECK SOUND`);
+				CHECK_SOUND.play();
 				break;
 
 			case 3:
-				console.log(`MATE SOUND`);
+				if(this.turn === 1){
+					console.log(`WHITE WON`);
+				}else{
+					console.log(`BLACK WON`);
+				}
+				END_SOUND.play();
 				break;
 
 			case 4:
-				console.log(`DRAW SOUND`);
+				console.log(`DRAW`);
+				END_SOUND.play();
 				break;
 		}
 
