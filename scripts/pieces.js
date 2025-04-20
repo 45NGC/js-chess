@@ -174,7 +174,6 @@ export class Pieces {
 			}
 		}
 
-		//TODO: Refactor castling code
 		// CASTLING
 		if (!this.isKingInCheck(board)) {
 			const color = board[row][col] > 0 ? "white" : "black";
