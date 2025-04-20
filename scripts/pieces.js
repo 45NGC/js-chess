@@ -181,24 +181,24 @@ export class Pieces {
 
 			if (castlingRights[color].short && board[row][this.rookColumnShort] === (color === "white" ? 4 : -4)) {
 				if (
-					board[row][this.shortCastlingSquaresToCheck[0]] === 0 &&
-					board[row][this.shortCastlingSquaresToCheck[1]] === 0 &&
-					!this.isKingInCheckAfterMove(board, row, col, row, this.shortCastlingSquaresToCheck[0]) &&
-					!this.isKingInCheckAfterMove(board, row, col, row, this.shortCastlingSquaresToCheck[1])
+					board[row][this.shortCastlingSquaresToCheck.square1] === 0 &&
+					board[row][this.shortCastlingSquaresToCheck.square2] === 0 &&
+					!this.isKingInCheckAfterMove(board, row, col, row, this.shortCastlingSquaresToCheck.square1) &&
+					!this.isKingInCheckAfterMove(board, row, col, row, this.shortCastlingSquaresToCheck.square2)
 				) {
-					availableSquares.push([row, this.shortCastlingSquaresToCheck[1]]);
+					availableSquares.push([row, this.shortCastlingSquaresToCheck.square2]);
 				}
 			}
 
 			if (castlingRights[color].long && board[row][this.rookColumnLong] === (color === "white" ? 5 : -5)) {
 				if (
-					board[row][this.longCastlingSquaresToCheck[0]] === 0 &&
-					board[row][this.longCastlingSquaresToCheck[1]] === 0 &&
-					board[row][this.longCastlingSquaresToCheck[2]] === 0 &&
-					!this.isKingInCheckAfterMove(board, row, col, row, this.longCastlingSquaresToCheck[1]) &&
-					!this.isKingInCheckAfterMove(board, row, col, row, this.longCastlingSquaresToCheck[2])
+					board[row][this.longCastlingSquaresToCheck.square1] === 0 &&
+					board[row][this.longCastlingSquaresToCheck.square2] === 0 &&
+					board[row][this.longCastlingSquaresToCheck.square3] === 0 &&
+					!this.isKingInCheckAfterMove(board, row, col, row, this.longCastlingSquaresToCheck.square2) &&
+					!this.isKingInCheckAfterMove(board, row, col, row, this.longCastlingSquaresToCheck.square3)
 				) {
-					availableSquares.push([row, this.longCastlingSquaresToCheck[1]]);
+					availableSquares.push([row, this.longCastlingSquaresToCheck.square2]);
 				}
 			}
 

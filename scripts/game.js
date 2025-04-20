@@ -344,6 +344,8 @@ export class Game {
 
 	movePiece(goToSquare) {
 
+		console.log(this.positionHistory);
+
 		this.positionHistory.positions.push(this.board.map(row => [...row]));
 		this.positionHistory.turns.push(this.turn);
 
