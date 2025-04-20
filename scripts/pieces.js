@@ -46,8 +46,13 @@ export class Pieces {
 		this.rookColumnShort = rotatedBoard ? 0 : 7;
 		this.rookColumnLong = rotatedBoard ? 7 : 0;
 
-		this.shortCastlingSquaresToCheck = rotatedBoard ? [2, 1] : [5, 6];
-		this.longCastlingSquaresToCheck = rotatedBoard ? [6, 5, 4] : [1, 2, 3];
+		this.shortCastlingSquaresToCheck = rotatedBoard
+			? { square1: 2, square2: 1 }
+			: { square1: 5, square2: 6 };
+
+		this.longCastlingSquaresToCheck = rotatedBoard
+			? { square1: 6, square2: 5, square3: 4 }
+			: { square1: 1, square2: 2, square3: 3 };
 	}
 
 	getPieceAvailableMoves(board, squareImageId, square, castlingRights, getAttackedSquares) {
@@ -176,7 +181,7 @@ export class Pieces {
 
 			if (castlingRights[color].short && board[row][this.rookColumnShort] === (color === "white" ? 4 : -4)) {
 				if (
-					board[row][this.shortCastlingSquaresToCheck[0]] === 0 && 
+					board[row][this.shortCastlingSquaresToCheck[0]] === 0 &&
 					board[row][this.shortCastlingSquaresToCheck[1]] === 0 &&
 					!this.isKingInCheckAfterMove(board, row, col, row, this.shortCastlingSquaresToCheck[0]) &&
 					!this.isKingInCheckAfterMove(board, row, col, row, this.shortCastlingSquaresToCheck[1])
@@ -187,8 +192,8 @@ export class Pieces {
 
 			if (castlingRights[color].long && board[row][this.rookColumnLong] === (color === "white" ? 5 : -5)) {
 				if (
-					board[row][this.longCastlingSquaresToCheck[0]] === 0 && 
-					board[row][this.longCastlingSquaresToCheck[1]] === 0 && 
+					board[row][this.longCastlingSquaresToCheck[0]] === 0 &&
+					board[row][this.longCastlingSquaresToCheck[1]] === 0 &&
 					board[row][this.longCastlingSquaresToCheck[2]] === 0 &&
 					!this.isKingInCheckAfterMove(board, row, col, row, this.longCastlingSquaresToCheck[1]) &&
 					!this.isKingInCheckAfterMove(board, row, col, row, this.longCastlingSquaresToCheck[2])
