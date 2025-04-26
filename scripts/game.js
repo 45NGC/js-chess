@@ -166,6 +166,10 @@ export class Game {
 		// the go-back-button we must close it
 		this.closePawnPromotionMenu();
 
+		// hide the winner message
+		const winnerMessage = document.getElementById('winner-message');
+		winnerMessage.classList.add('hidden')
+
 		const lastIndex = this.positionHistory.positions.length - 1;
 
 		if (lastIndex < 0) {
@@ -616,4 +620,5 @@ export class Game {
 	switchTurn() {
 		this.turn = this.turn === 1 ? -1 : 1;
 	}
+
 }
