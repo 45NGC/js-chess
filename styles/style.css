@@ -129,6 +129,25 @@ body {
 	object-fit: contain;
 }
 
+#winner-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 10px;
+    font-size: 32px;
+    font-weight: bold;
+    z-index: 1000;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
 .chess-board {
 	display: grid;
 	grid-template-columns: repeat(8, 60px);

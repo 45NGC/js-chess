@@ -121,6 +121,10 @@ export class Game {
 	restartGame() {
 		console.log(`CHESS GAME RESETED`);
 
+		// hide the winner message
+		const winnerMessage = document.getElementById('winner-message');
+		winnerMessage.classList.add('hidden')
+
 		// In case the promotion menu is active when the user presses
 		// the restar-button we must close it
 		this.closePawnPromotionMenu();
@@ -573,35 +577,40 @@ export class Game {
 	}
 
 	makeMoveSound(moveType) {
+		const winnerMessage = document.getElementById('winner-message');
+	
 		switch (moveType) {
-
 			case 0:
 				MOVE_SOUND.play();
 				break;
-
+	
 			case 1:
 				CAPTURE_SOUND.play();
 				break;
-
+	
 			case 2:
 				CHECK_SOUND.play();
 				break;
-
+	
 			case 3:
-				if(this.turn === 1){
+				if (this.turn === 1) {
 					console.log(`WHITE WON`);
-				}else{
+					winnerMessage.textContent = 'WHITE WON';
+				} else {
 					console.log(`BLACK WON`);
+					winnerMessage.textContent = 'BLACK WON';
 				}
+				winnerMessage.classList.remove('hidden');
 				END_SOUND.play();
 				break;
-
+	
 			case 4:
 				console.log(`DRAW`);
+				winnerMessage.textContent = 'DRAW';
+				winnerMessage.classList.remove('hidden');
 				END_SOUND.play();
 				break;
 		}
-
 	}
 
 	switchTurn() {
