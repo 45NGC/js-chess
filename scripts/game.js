@@ -122,8 +122,7 @@ export class Game {
 		console.log(`CHESS GAME RESETED`);
 
 		// hide the winner message
-		const winnerMessage = document.getElementById('winner-message');
-		winnerMessage.classList.add('hidden')
+		this.hideEndGameMessage();
 
 		// In case the promotion menu is active when the user presses
 		// the restar-button we must close it
@@ -167,8 +166,7 @@ export class Game {
 		this.closePawnPromotionMenu();
 
 		// hide the winner message
-		const winnerMessage = document.getElementById('winner-message');
-		winnerMessage.classList.add('hidden')
+		this.hideEndGameMessage();
 
 		const lastIndex = this.positionHistory.positions.length - 1;
 
@@ -352,17 +350,12 @@ export class Game {
 
 	movePiece(goToSquare) {
 
-		console.log(this.positionHistory);
-
 		this.positionHistory.positions.push(this.board.map(row => [...row]));
 		this.positionHistory.turns.push(this.turn);
 
 		// Save a copy of the current castling rights to the history, so future
 		// changes to 'castlingRights' do not affect previously stored data
 		this.positionHistory.castlingRights.push({ ...this.castlingRights });
-
-
-
 
 		this.hideElements('.lastMoveMark');
 
@@ -581,7 +574,6 @@ export class Game {
 	}
 
 	makeMoveSound(moveType) {
-		const winnerMessage = document.getElementById('winner-message');
 	
 		switch (moveType) {
 			case 0:
@@ -598,23 +590,29 @@ export class Game {
 	
 			case 3:
 				if (this.turn === 1) {
-					console.log(`WHITE WON`);
-					winnerMessage.textContent = 'WHITE WON';
+					this.showEndGameMessage(`WHITE WON`)
 				} else {
-					console.log(`BLACK WON`);
-					winnerMessage.textContent = 'BLACK WON';
+					this.showEndGameMessage(`BLACK WON`)
 				}
-				winnerMessage.classList.remove('hidden');
 				END_SOUND.play();
 				break;
 	
 			case 4:
-				console.log(`DRAW`);
-				winnerMessage.textContent = 'DRAW';
-				winnerMessage.classList.remove('hidden');
+				this.showEndGameMessage(`DRAW`)
 				END_SOUND.play();
 				break;
 		}
+	}
+
+	hideEndGameMessage(){
+		const winnerMessage = document.getElementById('winner-message');
+		winnerMessage.classList.add('hidden')
+	}
+
+	showEndGameMessage(message){
+		const winnerMessage = document.getElementById('winner-message');
+		winnerMessage.textContent = message;
+		winnerMessage.classList.remove('hidden');
 	}
 
 	switchTurn() {
