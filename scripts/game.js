@@ -7,6 +7,12 @@ const CAPTURE_SOUND = new Audio('assets/sound/capture.mp3');
 const CHECK_SOUND = new Audio('assets/sound/check.mp3');
 const END_SOUND = new Audio('assets/sound/end.mp3');
 
+const MOVE_NORMAL = 0;
+const MOVE_CAPTURE = 1;
+const MOVE_CHECK = 2;
+const MOVE_CHECKMATE = 3;
+const MOVE_DRAW = 4;
+
 
 export class Game {
 	constructor() {
@@ -45,7 +51,7 @@ export class Game {
 
 		// this.board = [
 		// 	[0, 0, 0, 0, 0, 0, 0, -7],
-		// 	[4, 0, 0, 1, 0, 0, 0, 0],
+		// 	[4, 0, 0, 0, 0, 0, 0, 0],
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
 		// 	[0, 0, 0, 0, 0, 0, 0, 0],
 		// 	[0, 0, 0, 0, 0, 7, 0, 0],
@@ -386,13 +392,14 @@ export class Game {
 		this.makeMoveSound(moveType);
 
 		// End game control:
-		if (moveType === 3 || moveType === 4) {
+		if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
 			this.showEndGameMessage(moveType)
 		}
 		this.switchTurn();
 	}
 
 
+	// Determines if the move is a capture
 	determineMoveType(goToRow, goToCol) {
 		return this.board[goToRow][goToCol] !== 0 ? 1 : 0;
 	}
@@ -506,7 +513,7 @@ export class Game {
 				this.makeMoveSound(moveType);
 
 				// End game control:
-				if (moveType === 3 || moveType === 4) {
+				if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
 					this.showEndGameMessage(moveType)
 				}
 
@@ -571,13 +578,13 @@ export class Game {
 
 		if (Object.keys(moves).length === 0) {
 			if (inCheck) {
-				return 3;
+				return MOVE_CHECKMATE;
 			} else {
-				return 4;
+				return MOVE_DRAW;
 			}
 		}
 
-		if (inCheck) return 2;
+		if (inCheck) return MOVE_CHECK;
 
 		return previousMoveType;
 	}
@@ -585,20 +592,20 @@ export class Game {
 	makeMoveSound(moveType) {
 
 		switch (moveType) {
-			case 0:
+			case MOVE_NORMAL:
 				MOVE_SOUND.play();
 				break;
 
-			case 1:
+			case MOVE_CAPTURE:
 				CAPTURE_SOUND.play();
 				break;
 
-			case 2:
+			case MOVE_CHECK:
 				CHECK_SOUND.play();
 				break;
 
-			case 3:
-			case 4:
+			case MOVE_CHECKMATE:
+			case MOVE_DRAW:
 				END_SOUND.play();
 				break;
 		}
@@ -613,15 +620,13 @@ export class Game {
 		const endGameMessage = document.getElementById('end-game-message');
 
 
-		if (moveType === 3) {
-			if (this.turn === 1) {
-				endGameMessage.textContent = `WHITE WON`;
-			} else {
-				endGameMessage.textContent = `BLACK WON`;
-			}
-
-		} else {
-			endGameMessage.textContent = `DRAW`
+		switch (moveType) {
+			case MOVE_CHECKMATE:
+				endGameMessage.textContent = this.turn === 1 ? `WHITE WON` : `BLACK WON`;
+				break;
+			case MOVE_DRAW:
+				endGameMessage.textContent = `DRAW`;
+				break;
 		}
 
 		endGameMessage.classList.remove('hidden');
