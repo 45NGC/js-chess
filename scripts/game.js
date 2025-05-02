@@ -121,7 +121,6 @@ export class Game {
 	restartGame() {
 		console.log(`CHESS GAME RESETED`);
 
-		// hide the winner message
 		this.hideEndGameMessage();
 
 		// In case the promotion menu is active when the user presses
@@ -165,7 +164,6 @@ export class Game {
 		// the go-back-button we must close it
 		this.closePawnPromotionMenu();
 
-		// hide the winner message
 		this.hideEndGameMessage();
 
 		const lastIndex = this.positionHistory.positions.length - 1;
@@ -182,8 +180,8 @@ export class Game {
 	}
 
 	rotateBoard() {
-		
-		if(!this.disableRotateBoardButton){
+
+		if (!this.disableRotateBoardButton) {
 
 			console.log("BOARD ROTATED");
 
@@ -198,16 +196,16 @@ export class Game {
 				}
 				return newMatrix;
 			};
-	
+
 			this.board = rotateBoardMatrix(this.board);
-		
+
 			// Rotate all positions of the positionHistory object:
 			this.positionHistory.positions = this.positionHistory.positions.map(pos => rotateBoardMatrix(pos));
-		
+
 			this.rotatedBoard = !this.rotatedBoard;
 			this.renderBoard();
 
-		}else{
+		} else {
 			console.log("CAN NOT USE THIS BUTTON WHILE A PAWN PROMOTION IS IN PROCESS");
 		}
 	}
@@ -386,6 +384,11 @@ export class Game {
 
 		moveType = this.getGameStateWithMoveType(moveType);
 		this.makeMoveSound(moveType);
+
+		// End game control:
+		if (moveType === 3 || moveType === 4) {
+			this.showEndGameMessage(moveType)
+		}
 		this.switchTurn();
 	}
 
@@ -400,7 +403,7 @@ export class Game {
 
 	performCastling(goToRow, goToCol, piece) {
 		const rookValue = piece > 0 ? 4 : -4;
-	
+
 		const castlingMoves = this.rotatedBoard
 			? {
 				1: { rookColFrom: 0, rookColTo: 2 }, // SHORT
@@ -410,14 +413,14 @@ export class Game {
 				6: { rookColFrom: 7, rookColTo: 5 }, // SHORT
 				2: { rookColFrom: 0, rookColTo: 3 }  // LONG
 			};
-	
+
 		const move = castlingMoves[goToCol];
 		if (move) {
 			this.board[goToRow][move.rookColTo] = rookValue;
 			this.board[goToRow][move.rookColFrom] = 0;
 		}
 	}
-	
+
 
 	checkCastlingRights(movingPiece) {
 
@@ -501,6 +504,12 @@ export class Game {
 
 				moveType = this.getGameStateWithMoveType(moveType);
 				this.makeMoveSound(moveType);
+
+				// End game control:
+				if (moveType === 3 || moveType === 4) {
+					this.showEndGameMessage(moveType)
+				}
+
 				this.disableRotateBoardButton = false;
 				this.switchTurn();
 				this.renderBoard();
@@ -574,45 +583,48 @@ export class Game {
 	}
 
 	makeMoveSound(moveType) {
-	
+
 		switch (moveType) {
 			case 0:
 				MOVE_SOUND.play();
 				break;
-	
+
 			case 1:
 				CAPTURE_SOUND.play();
 				break;
-	
+
 			case 2:
 				CHECK_SOUND.play();
 				break;
-	
+
 			case 3:
-				if (this.turn === 1) {
-					this.showEndGameMessage(`WHITE WON`)
-				} else {
-					this.showEndGameMessage(`BLACK WON`)
-				}
-				END_SOUND.play();
-				break;
-	
 			case 4:
-				this.showEndGameMessage(`DRAW`)
 				END_SOUND.play();
 				break;
 		}
 	}
 
-	hideEndGameMessage(){
-		const winnerMessage = document.getElementById('winner-message');
-		winnerMessage.classList.add('hidden')
+	hideEndGameMessage() {
+		const endGameMessage = document.getElementById('end-game-message');
+		endGameMessage.classList.add('hidden')
 	}
 
-	showEndGameMessage(message){
-		const winnerMessage = document.getElementById('winner-message');
-		winnerMessage.textContent = message;
-		winnerMessage.classList.remove('hidden');
+	showEndGameMessage(moveType) {
+		const endGameMessage = document.getElementById('end-game-message');
+
+
+		if (moveType === 3) {
+			if (this.turn === 1) {
+				endGameMessage.textContent = `WHITE WON`;
+			} else {
+				endGameMessage.textContent = `BLACK WON`;
+			}
+
+		} else {
+			endGameMessage.textContent = `DRAW`
+		}
+
+		endGameMessage.classList.remove('hidden');
 	}
 
 	switchTurn() {

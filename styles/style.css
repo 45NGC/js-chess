@@ -118,7 +118,7 @@ button {
 	object-fit: contain;
 }
 
-#winner-message {
+#end-game-message {
 	position: absolute;
 	top: 50%;
 	left: 50%;
