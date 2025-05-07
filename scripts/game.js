@@ -12,6 +12,7 @@ const MOVE_CAPTURE = 1;
 const MOVE_CHECK = 2;
 const MOVE_CHECKMATE = 3;
 const MOVE_DRAW = 4;
+const END_TIME = 5;
 
 
 export class Game {
@@ -81,6 +82,12 @@ export class Game {
 			white: { short: true, long: true },
 			black: { short: true, long: true }
 		};
+
+		this.blackTime = 5 * 60;
+		this.whiteTime = 5 * 60;
+		this.intervalId;
+
+		this.endGame = false;
 	}
 
 	startGame() {
@@ -94,6 +101,8 @@ export class Game {
 		});
 
 		this.renderBoard();
+		this.updateClocks();
+		this.startClock();
 	}
 
 	renderBoard() {
@@ -164,6 +173,14 @@ export class Game {
 			black: { short: true, long: true }
 		};
 
+		this.blackTime = 5 * 60;
+		this.whiteTime = 5 * 60;
+		this.intervalId;
+
+		this.endGame = false;
+
+		this.updateClocks();
+		this.startClock();
 		this.renderBoard();
 	}
 
@@ -219,6 +236,36 @@ export class Game {
 		}
 	}
 
+	startClock() {
+		clearInterval(this.intervalId);
+
+		this.intervalId = setInterval(() => {
+			if (this.turn === 1) {
+				if (this.whiteTime > 0) {
+					this.whiteTime--;
+				} else {
+					clearInterval(this.intervalId);
+					this.makeMoveSound(END_TIME);
+					this.showEndGameMessage(END_TIME);
+				}
+			} else {
+				if (this.blackTime > 0) {
+					this.blackTime--;
+				} else {
+					clearInterval(this.intervalId);
+					this.makeMoveSound(END_TIME);
+					this.showEndGameMessage(END_TIME);
+				}
+			}
+			this.updateClocks();
+		}, 1000);
+	}
+
+	updateClocks() {
+		document.getElementById('black-clock').textContent = this.formatTime(this.blackTime);
+		document.getElementById('white-clock').textContent = this.formatTime(this.whiteTime);
+	}
+
 	rotateClocks(setInitialPosition = false) {
 		const clockContainer = document.querySelector('.chess-clock');
 		const whiteClock = document.getElementById('white-clock');
@@ -237,6 +284,12 @@ export class Game {
 				}
 			}
 		}
+	}
+
+	formatTime(seconds) {
+		const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+		const secs = (seconds % 60).toString().padStart(2, '0');
+		return `${mins}:${secs}`;
 	}
 
 	getPreviousPosition() {
@@ -260,51 +313,54 @@ export class Game {
 
 	handleMouseClick(event) {
 
-		const clickedSquare = event.currentTarget;
+		if (!this.endGame) {
 
-		// check if the square is an available square
-		if (this.availableSquares.includes(clickedSquare.id)) {
+			const clickedSquare = event.currentTarget;
 
-			// In case that the square is available we make the move
-			const goToSquare = clickedSquare.id.match(/\d+/g).map(Number);
-			this.movePiece(goToSquare);
+			// check if the square is an available square
+			if (this.availableSquares.includes(clickedSquare.id)) {
 
-		} else {
-			this.availableSquares = [];
-		}
+				// In case that the square is available we make the move
+				const goToSquare = clickedSquare.id.match(/\d+/g).map(Number);
+				this.movePiece(goToSquare);
 
-		// hide active overlays and circles
-		this.hideElements(`.circle`);
-		this.hideElements(`.overlayRed`);
-
-		document.querySelectorAll('.overlayYellow').forEach(overlay => {
-			overlay.style.display = 'none';
-		});
-
-		// show an overlay over the targeted square
-		const yellowSquareOverlay = clickedSquare.querySelector('.overlayYellow');
-
-		if (yellowSquareOverlay) {
-			yellowSquareOverlay.style.display = 'block';
-		}
-
-		// Check if the clicked square has a piece in it
-		const squareImage = clickedSquare.querySelector('img');
-		if (squareImage) {
-
-			const pieces = new Pieces(this.turn, this.rotatedBoard);
-			const squareImageId = squareImage.getAttribute('id');
-
-			// Only calls 'getPieceAvailableMoves' if the selected piece is of the corresponding color
-			// (if turn = 1 only white pieces can move and if turn = -1 only the black pieces can move)
-			if (pieces.playerPieces.includes(pieces.getKeyByValue(PIECE_MAP, squareImageId))) {
-
-				this.selectedPieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
-				const pieceAvailableMoves = pieces.getPieceAvailableMoves(this.board, squareImageId, this.selectedPieceSquare, this.castlingRights, false);
-
-				this.showAvailableSquares(pieceAvailableMoves);
+			} else {
+				this.availableSquares = [];
 			}
 
+			// hide active overlays and circles
+			this.hideElements(`.circle`);
+			this.hideElements(`.overlayRed`);
+
+			document.querySelectorAll('.overlayYellow').forEach(overlay => {
+				overlay.style.display = 'none';
+			});
+
+			// show an overlay over the targeted square
+			const yellowSquareOverlay = clickedSquare.querySelector('.overlayYellow');
+
+			if (yellowSquareOverlay) {
+				yellowSquareOverlay.style.display = 'block';
+			}
+
+			// Check if the clicked square has a piece in it
+			const squareImage = clickedSquare.querySelector('img');
+			if (squareImage) {
+
+				const pieces = new Pieces(this.turn, this.rotatedBoard);
+				const squareImageId = squareImage.getAttribute('id');
+
+				// Only calls 'getPieceAvailableMoves' if the selected piece is of the corresponding color
+				// (if turn = 1 only white pieces can move and if turn = -1 only the black pieces can move)
+				if (pieces.playerPieces.includes(pieces.getKeyByValue(PIECE_MAP, squareImageId))) {
+
+					this.selectedPieceSquare = clickedSquare.id.match(/\d+/g).map(Number);
+					const pieceAvailableMoves = pieces.getPieceAvailableMoves(this.board, squareImageId, this.selectedPieceSquare, this.castlingRights, false);
+
+					this.showAvailableSquares(pieceAvailableMoves);
+				}
+
+			}
 		}
 	}
 
@@ -629,6 +685,7 @@ export class Game {
 
 			case MOVE_CHECKMATE:
 			case MOVE_DRAW:
+			case END_TIME:
 				END_SOUND.play();
 				break;
 		}
@@ -640,8 +697,8 @@ export class Game {
 	}
 
 	showEndGameMessage(moveType) {
+		this.endGame = true;
 		const endGameMessage = document.getElementById('end-game-message');
-
 
 		switch (moveType) {
 			case MOVE_CHECKMATE:
@@ -649,6 +706,9 @@ export class Game {
 				break;
 			case MOVE_DRAW:
 				endGameMessage.textContent = `DRAW`;
+				break;
+			case END_TIME:
+				endGameMessage.textContent = this.turn === 1 ? `BLACK WON` : `WHITE WON`;
 				break;
 		}
 
