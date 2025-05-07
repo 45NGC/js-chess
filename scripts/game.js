@@ -131,8 +131,68 @@ export class Game {
 		}
 	}
 
-	// Button functions :
 
+	
+	// CLOCK FUNCTIONS :
+	startClock() {
+		clearInterval(this.intervalId);
+
+		this.intervalId = setInterval(() => {
+			if (this.turn === 1) {
+				if (this.whiteTime > 0) {
+					this.whiteTime--;
+				} else {
+					clearInterval(this.intervalId);
+					this.makeMoveSound(END_TIME);
+					this.showEndGameMessage(END_TIME);
+				}
+			} else {
+				if (this.blackTime > 0) {
+					this.blackTime--;
+				} else {
+					clearInterval(this.intervalId);
+					this.makeMoveSound(END_TIME);
+					this.showEndGameMessage(END_TIME);
+				}
+			}
+			this.updateClocks();
+		}, 1000);
+	}
+
+	updateClocks() {
+		document.getElementById('black-clock').textContent = this.formatTime(this.blackTime);
+		document.getElementById('white-clock').textContent = this.formatTime(this.whiteTime);
+	}
+
+	rotateClocks(setInitialPosition = false) {
+		const clockContainer = document.querySelector('.chess-clock');
+		const whiteClock = document.getElementById('white-clock');
+		const blackClock = document.getElementById('black-clock');
+
+		if (whiteClock && blackClock && clockContainer) {
+
+			if (setInitialPosition) {
+				clockContainer.insertBefore(blackClock, whiteClock);
+			} else {
+
+				if (clockContainer.firstElementChild === blackClock) {
+					clockContainer.insertBefore(whiteClock, blackClock);
+				} else {
+					clockContainer.insertBefore(blackClock, whiteClock);
+				}
+			}
+		}
+	}
+
+	formatTime(seconds) {
+		const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+		const secs = (seconds % 60).toString().padStart(2, '0');
+		return `${mins}:${secs}`;
+	}
+
+
+
+	// BUTTON FUNCTIONS :
 	restartGame() {
 		console.log(`CHESS GAME RESETED`);
 
@@ -236,62 +296,6 @@ export class Game {
 		}
 	}
 
-	startClock() {
-		clearInterval(this.intervalId);
-
-		this.intervalId = setInterval(() => {
-			if (this.turn === 1) {
-				if (this.whiteTime > 0) {
-					this.whiteTime--;
-				} else {
-					clearInterval(this.intervalId);
-					this.makeMoveSound(END_TIME);
-					this.showEndGameMessage(END_TIME);
-				}
-			} else {
-				if (this.blackTime > 0) {
-					this.blackTime--;
-				} else {
-					clearInterval(this.intervalId);
-					this.makeMoveSound(END_TIME);
-					this.showEndGameMessage(END_TIME);
-				}
-			}
-			this.updateClocks();
-		}, 1000);
-	}
-
-	updateClocks() {
-		document.getElementById('black-clock').textContent = this.formatTime(this.blackTime);
-		document.getElementById('white-clock').textContent = this.formatTime(this.whiteTime);
-	}
-
-	rotateClocks(setInitialPosition = false) {
-		const clockContainer = document.querySelector('.chess-clock');
-		const whiteClock = document.getElementById('white-clock');
-		const blackClock = document.getElementById('black-clock');
-
-		if (whiteClock && blackClock && clockContainer) {
-
-			if (setInitialPosition) {
-				clockContainer.insertBefore(blackClock, whiteClock);
-			} else {
-
-				if (clockContainer.firstElementChild === blackClock) {
-					clockContainer.insertBefore(whiteClock, blackClock);
-				} else {
-					clockContainer.insertBefore(blackClock, whiteClock);
-				}
-			}
-		}
-	}
-
-	formatTime(seconds) {
-		const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-		const secs = (seconds % 60).toString().padStart(2, '0');
-		return `${mins}:${secs}`;
-	}
-
 	getPreviousPosition() {
 
 		// only to allow one retreat:
@@ -304,8 +308,9 @@ export class Game {
 		return { board, turn, castlingRights };
 	}
 
-	// Mouse functions :
 
+
+	// MOUSE FUNCTIONS :
 	handleMouseOver(event) {
 		const squareId = event.currentTarget.id;
 		//console.log(`Square ID: ${squareId}`);
@@ -364,8 +369,9 @@ export class Game {
 		}
 	}
 
-	// Game functions :
 
+
+	// GAME FUNCTIONS :
 	showAvailableSquares(coordinatesArray) {
 
 		coordinatesArray.forEach(([row, col]) => {
@@ -399,7 +405,6 @@ export class Game {
 		element.classList.add(elementType);
 		cell.appendChild(element);
 	}
-
 
 	hideElements(selector) {
 		const elements = document.querySelectorAll(selector);
@@ -477,7 +482,6 @@ export class Game {
 		this.switchTurn();
 	}
 
-
 	// Determines if the move is a capture
 	determineMoveType(goToRow, goToCol) {
 		return this.board[goToRow][goToCol] !== 0 ? 1 : 0;
@@ -506,7 +510,6 @@ export class Game {
 			this.board[goToRow][move.rookColFrom] = 0;
 		}
 	}
-
 
 	checkCastlingRights(movingPiece) {
 
