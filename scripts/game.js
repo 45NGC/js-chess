@@ -133,6 +133,8 @@ export class Game {
 		// the restar-button we must close it
 		this.closePawnPromotionMenu();
 
+		this.rotateClocks(true);
+
 		this.turn = 1;
 
 		this.board = [
@@ -208,11 +210,32 @@ export class Game {
 			// Rotate all positions of the positionHistory object:
 			this.positionHistory.positions = this.positionHistory.positions.map(pos => rotateBoardMatrix(pos));
 
+			this.rotateClocks();
 			this.rotatedBoard = !this.rotatedBoard;
 			this.renderBoard();
 
 		} else {
 			console.log("CAN NOT USE THIS BUTTON WHILE A PAWN PROMOTION IS IN PROCESS");
+		}
+	}
+
+	rotateClocks(setInitialPosition = false) {
+		const clockContainer = document.querySelector('.chess-clock');
+		const whiteClock = document.getElementById('white-clock');
+		const blackClock = document.getElementById('black-clock');
+
+		if (whiteClock && blackClock && clockContainer) {
+
+			if (setInitialPosition) {
+				clockContainer.insertBefore(blackClock, whiteClock);
+			} else {
+
+				if (clockContainer.firstElementChild === blackClock) {
+					clockContainer.insertBefore(whiteClock, blackClock);
+				} else {
+					clockContainer.insertBefore(blackClock, whiteClock);
+				}
+			}
 		}
 	}
 

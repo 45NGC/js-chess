@@ -133,8 +133,26 @@ button {
 	text-align: center;
 }
 
+#white-clock{
+	background-color: white;
+	color: black;
+}
+
+#black-clock{
+	background-color: black;
+	color: white;
+}
+
 .hidden {
 	display: none;
+}
+
+.board-clock-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	padding: 20px;
 }
 
 .chess-board {
@@ -143,6 +161,22 @@ button {
 	grid-template-rows: repeat(8, 60px);
 	gap: 0;
 	border: 2px solid var(--color-button-border);
+}
+
+.chess-clock {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	justify-content: center;
+	align-items: center;
+}
+
+.player-clock {
+	font-size: 24px;
+	font-weight: bold;
+	padding: 10px 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .cell {
