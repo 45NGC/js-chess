@@ -16,7 +16,7 @@ const END_TIME = 5;
 
 
 export class Game {
-	constructor() {
+	constructor(minutes, bonus) {
 		this.turn = 1;
 
 		// PIECES :
@@ -83,8 +83,10 @@ export class Game {
 			black: { short: true, long: true }
 		};
 
-		this.blackTime = 5 * 60;
-		this.whiteTime = 5 * 60;
+		this.timeControl = minutes;
+		this.bonusTime = bonus;
+		this.blackTime = minutes * 60;
+		this.whiteTime = minutes * 60;
 		this.intervalId;
 
 		this.endGame = false;
@@ -184,6 +186,14 @@ export class Game {
 		}
 	}
 
+	addBonusTime() {
+		if (this.turn === 1) {
+			this.whiteTime += this.bonusTime;
+		} else {
+			this.blackTime += this.bonusTime;
+		}
+	}
+
 	formatTime(seconds) {
 		const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
 		const secs = (seconds % 60).toString().padStart(2, '0');
@@ -233,8 +243,8 @@ export class Game {
 			black: { short: true, long: true }
 		};
 
-		this.blackTime = 5 * 60;
-		this.whiteTime = 5 * 60;
+		this.blackTime = this.timeControl * 60;
+		this.whiteTime = this.timeControl * 60;
 		this.intervalId;
 
 		this.endGame = false;
@@ -479,6 +489,7 @@ export class Game {
 		if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
 			this.showEndGameMessage(moveType)
 		}
+		this.addBonusTime();
 		this.switchTurn();
 	}
 
