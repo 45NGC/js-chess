@@ -16,7 +16,7 @@ const END_TIME = 5;
 
 
 export class Game {
-	constructor(minutes, bonus) {
+	constructor(minutes, increment) {
 		this.turn = 1;
 
 		// PIECES :
@@ -84,10 +84,9 @@ export class Game {
 		};
 
 		this.timeControl = minutes;
-		this.bonusTime = bonus;
+		this.incrementTime = increment;
 		this.blackTime = minutes * 60;
 		this.whiteTime = minutes * 60;
-		this.intervalId;
 
 		this.endGame = false;
 	}
@@ -166,6 +165,10 @@ export class Game {
 		document.getElementById('white-clock').textContent = this.formatTime(this.whiteTime);
 	}
 
+	stopClocks(){
+		clearInterval(this.intervalId);
+	}
+
 	rotateClocks(setInitialPosition = false) {
 		const clockContainer = document.querySelector('.chess-clock');
 		const whiteClock = document.getElementById('white-clock');
@@ -186,11 +189,11 @@ export class Game {
 		}
 	}
 
-	addBonusTime() {
+	addIncrementTime() {
 		if (this.turn === 1) {
-			this.whiteTime += this.bonusTime;
+			this.whiteTime += this.incrementTime;
 		} else {
-			this.blackTime += this.bonusTime;
+			this.blackTime += this.incrementTime;
 		}
 	}
 
@@ -489,7 +492,7 @@ export class Game {
 		if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
 			this.showEndGameMessage(moveType)
 		}
-		this.addBonusTime();
+		this.addIncrementTime();
 		this.switchTurn();
 	}
 

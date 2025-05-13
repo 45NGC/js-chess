@@ -2,22 +2,14 @@ import { Game } from "./game.js";
 
 
 document.getElementById("start-button").addEventListener("click", () => {
-	document.getElementById("start-screen").style.display = "none";
-	document.getElementById("game-container").style.display = "block";
-	
-	//TODO: add multiple time control options for the user to choose
-	// Example:
-	// const time = showTimeControlOptions()
-	// window.game = new Game(time[0], time[1])
-	window.game = new Game(5, 10)
-	window.game.startGame();
+	showTimeControlOptions();
 });
 
 document.getElementById("exit-button").addEventListener("click", () => {
 	document.getElementById("start-screen").style.display = "flex";
 	document.getElementById("game-container").style.display = "none";
 
-	window.game?.restartGame();
+	window.game?.stopClocks();
 });
 
 document.getElementById("restart-button").addEventListener("click", () => {
@@ -31,3 +23,22 @@ document.getElementById("go-back-button").addEventListener("click", () => {
 document.getElementById("rotate-board-button").addEventListener("click", () => {
     window.game?.rotateBoard();
 });
+
+document.querySelectorAll(".time-option").forEach(button => {
+	button.addEventListener("click", () => {
+		const [minutes, increment] = button.dataset.time.split("|").map(Number);
+		
+		document.getElementById("time-options-screen").style.display = "none";
+		document.getElementById("game-container").style.display = "block";
+
+		window.game = new Game(minutes, increment);
+		window.game.startGame();
+	});
+});
+
+
+function showTimeControlOptions(){
+	document.getElementById("start-screen").style.display = "none";
+	document.getElementById("game-container").style.display = "none";
+	document.getElementById("time-options-screen").style.display = "block";
+}

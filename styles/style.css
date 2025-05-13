@@ -64,6 +64,31 @@ body {
 	background-color: var(--color-button-green-hover);
 }
 
+#time-options-buttons {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1rem;
+	max-width: 500px;
+	margin: 2rem auto;
+}
+
+.time-option {
+	font-size: 1.5rem;
+	padding: 1rem 2rem;
+	background-color: var(--color-button-green);
+	color: var(--color-text-light);
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.time-option:hover {
+	background-color: var(--color-button-green-hover);
+}
+
 button {
 	cursor: pointer;
 	transition: border-color 0.3s ease;

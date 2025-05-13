@@ -12,7 +12,18 @@
 
 	<div id="start-screen">
 		<h1>CHESS</h1>
-		<button id="start-button">Start Game</button>
+		<button id="start-button">Local Game</button>
+	</div>
+
+	<div id="time-options-screen" style="display: none;">
+		<div id="time-options-buttons">
+			<button class="time-option" data-time="1|2">1|2</button>
+			<button class="time-option" data-time="3|2">3|2</button>
+			<button class="time-option" data-time="5|5">5|5</button>
+			<button class="time-option" data-time="10|0">10|0</button>
+			<button class="time-option" data-time="15|10">15|10</button>
+			<button class="time-option" data-time="30|0">30|0</button>
+		</div>
 	</div>
 
 	<div id="game-container">
@@ -57,7 +68,7 @@
 				<div class="cell black" id="square-0-7">
 					<div class="overlay"></div>
 				</div>
-	
+
 				<!-- Row 1 (black pawns)-->
 				<div class="cell black" id="square-1-0">
 					<div class="overlay"></div>
@@ -83,7 +94,7 @@
 				<div class="cell white" id="square-1-7">
 					<div class="overlay"></div>
 				</div>
-	
+
 				<!-- Row 2 -->
 				<div class="cell white" id="square-2-0">
 					<div class="overlay"></div>
@@ -109,7 +120,7 @@
 				<div class="cell black" id="square-2-7">
 					<div class="overlay"></div>
 				</div>
-	
+
 				<!-- Row 3 -->
 				<div class="cell black" id="square-3-0">
 					<div class="overlay"></div>
@@ -135,7 +146,7 @@
 				<div class="cell white" id="square-3-7">
 					<div class="overlay"></div>
 				</div>
-	
+
 				<!-- Row 4 -->
 				<div class="cell white" id="square-4-0">
 					<div class="overlay"></div>
@@ -161,7 +172,7 @@
 				<div class="cell black" id="square-4-7">
 					<div class="overlay"></div>
 				</div>
-	
+
 				<!-- Row 5 -->
 				<div class="cell black" id="square-5-0">
 					<div class="overlay"></div>
@@ -187,7 +198,7 @@
 				<div class="cell white" id="square-5-7">
 					<div class="overlay"></div>
 				</div>
-	
+
 				<!-- Row 6 -->
 				<div class="cell white" id="square-6-0">
 					<div class="overlay"></div>
@@ -213,7 +224,7 @@
 				<div class="cell black" id="square-6-7">
 					<div class="overlay"></div>
 				</div>
-	
+
 				<!-- Row 7 -->
 				<div class="cell black" id="square-7-0">
 					<div class="overlay"></div>
@@ -242,8 +253,8 @@
 			</div>
 
 			<div class="chess-clock">
-				<div id="black-clock" class="player-clock">05:00</div>
-				<div id="white-clock" class="player-clock">05:00</div>
+				<div id="black-clock" class="player-clock">00:00</div>
+				<div id="white-clock" class="player-clock">00:00</div>
 			</div>
 
 		</div>
