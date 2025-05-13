@@ -16,8 +16,9 @@ This JavaScript chess project implements almost all the official rules of the ga
 - Check and checkmate  
 - Castling (kingside and queenside)  
 - Pawn promotion  
-- En passant captures
-- Stalemate
+- En passant captures  
+- Stalemate  
+- Game timer
 
 **Mechanics yet to be implemented to fully comply with official chess rules:**
 
@@ -35,6 +36,8 @@ The project is built with plain JavaScript and runs directly in the browser. No 
 
 An interactive chessboard is rendered using HTML and CSS. When a piece is selected, its legal moves are highlighted. The rule engine validates each move and updates the game state accordingly.
 
+The timer tracks each player’s remaining time, switching automatically after every turn and stopping when the game ends or when a player runs out of time.
+
 ---
 
 ## 📁 Project Structure
@@ -42,7 +45,7 @@ An interactive chessboard is rendered using HTML and CSS. When a piece is select
 - `index.html`: Contains the chessboard and main UI elements  
 - `main.js`: Handles button actions (start game, restart, rotate board...)  
 - `game.js`: Manages the core game logic (board state, turns, user interactions...)  
-- `pieces.js`: Defines the pieces and their legal movements
+- `pieces.js`: Defines the pieces and their legal movements  
 
 ---
 
@@ -58,12 +61,12 @@ An interactive chessboard is rendered using HTML and CSS. When a piece is select
 - [x] Legal move validation  
 - [x] Automatic turns  
 - [x] Interactive visual interface  
+- [x] **Game timer**
 
 🚧 **Future implementations:**
 - [ ] Remaining official rules mentioned above  
 - [ ] Multiplayer mode  
-- [ ] Game timer  
-- [ ] AI to play against the computer
+- [ ] AI to play against the computer  
 
 ---
 
