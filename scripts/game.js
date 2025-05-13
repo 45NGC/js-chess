@@ -76,6 +76,8 @@ export class Game {
 		// does not work how it should
 		this.disableRotateBoardButton = false;
 
+		this.disableGoBackPositionButton = false;
+
 		this.rotatedBoard = false;
 
 		this.castlingRights = {
@@ -133,7 +135,7 @@ export class Game {
 	}
 
 
-	
+
 	// CLOCK FUNCTIONS :
 	startClock() {
 		clearInterval(this.intervalId);
@@ -165,7 +167,7 @@ export class Game {
 		document.getElementById('white-clock').textContent = this.formatTime(this.whiteTime);
 	}
 
-	stopClocks(){
+	stopClocks() {
 		clearInterval(this.intervalId);
 	}
 
@@ -239,6 +241,7 @@ export class Game {
 		this.availableSquares = [];
 		this.selectedPieceSquare = [];
 		this.disableRotateBoardButton = false;
+		this.disableGoBackPositionButton = false;
 		this.rotatedBoard = false;
 
 		this.castlingRights = {
@@ -258,22 +261,25 @@ export class Game {
 	}
 
 	goBackPosition() {
-		// In case the promotion menu is active when the user presses
-		// the go-back-button we must close it
-		this.closePawnPromotionMenu();
+		if (!this.disableGoBackPositionButton) {
 
-		this.hideEndGameMessage();
+			// In case the promotion menu is active when the user presses
+			// the go-back-button we must close it
+			this.closePawnPromotionMenu();
 
-		const lastIndex = this.positionHistory.positions.length - 1;
+			this.hideEndGameMessage();
 
-		if (lastIndex < 0) {
-			console.warn("YOU CAN NOT UNDO MORE MOVES");
-		} else {
-			const lastState = this.getPreviousPosition();
-			this.board = lastState.board.map(row => [...row]);
-			this.turn = lastState.turn;
-			this.castlingRights = lastState.castlingRights;
-			this.renderBoard();
+			const lastIndex = this.positionHistory.positions.length - 1;
+
+			if (lastIndex < 0) {
+				console.warn("YOU CAN NOT UNDO MORE MOVES");
+			} else {
+				const lastState = this.getPreviousPosition();
+				this.board = lastState.board.map(row => [...row]);
+				this.turn = lastState.turn;
+				this.castlingRights = lastState.castlingRights;
+				this.renderBoard();
+			}
 		}
 	}
 
@@ -715,7 +721,9 @@ export class Game {
 
 	showEndGameMessage(moveType) {
 		this.endGame = true;
+		this.disableGoBackPositionButton = true;
 		const endGameMessage = document.getElementById('end-game-message');
+		this.stopClocks();
 
 		switch (moveType) {
 			case MOVE_CHECKMATE:
