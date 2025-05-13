@@ -8,6 +8,7 @@ document.getElementById("start-button").addEventListener("click", () => {
 document.getElementById("exit-button").addEventListener("click", () => {
 	document.getElementById("start-screen").style.display = "flex";
 	document.getElementById("game-container").style.display = "none";
+	document.getElementById('end-game-message').style.display = "none";
 
 	window.game?.stopClocks();
 });
