@@ -1,7 +1,7 @@
 'use strict'
 
 import { Pieces, PIECE_MAP, CASTLING_PIECES } from "./pieces.js";
-import * as CONSTANTS from "./constants.js";
+import { END_TIME, MOVE_CAPTURE, MOVE_CHECK, MOVE_CHECKMATE, MOVE_DRAW, MOVE_NORMAL } from "./constants.js";
 
 const MOVE_SOUND = new Audio('assets/sound/move.mp3');
 const CAPTURE_SOUND = new Audio('assets/sound/capture.mp3');
@@ -489,7 +489,7 @@ export class Game {
 		this.makeMoveSound(moveType);
 
 		// End game control:
-		if (moveType === CONSTANTS.MOVE_CHECKMATE || moveType === CONSTANTS.MOVE_DRAW) {
+		if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
 			this.showEndGameMessage(moveType)
 		}
 		this.addIncrementTime();
@@ -609,7 +609,7 @@ export class Game {
 				this.makeMoveSound(moveType);
 
 				// End game control:
-				if (moveType === CONSTANTS.MOVE_CHECKMATE || moveType === CONSTANTS.MOVE_DRAW) {
+				if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
 					this.showEndGameMessage(moveType)
 				}
 
@@ -674,13 +674,13 @@ export class Game {
 
 		if (Object.keys(moves).length === 0) {
 			if (inCheck) {
-				return CONSTANTS.MOVE_CHECKMATE;
+				return MOVE_CHECKMATE;
 			} else {
-				return CONSTANTS.MOVE_DRAW;
+				return MOVE_DRAW;
 			}
 		}
 
-		if (inCheck) return CONSTANTS.MOVE_CHECK;
+		if (inCheck) return MOVE_CHECK;
 
 		return previousMoveType;
 	}
@@ -688,21 +688,21 @@ export class Game {
 	makeMoveSound(moveType) {
 
 		switch (moveType) {
-			case CONSTANTS.MOVE_NORMAL:
+			case MOVE_NORMAL:
 				MOVE_SOUND.play();
 				break;
 
-			case CONSTANTS.MOVE_CAPTURE:
+			case MOVE_CAPTURE:
 				CAPTURE_SOUND.play();
 				break;
 
-			case CONSTANTS.MOVE_CHECK:
+			case MOVE_CHECK:
 				CHECK_SOUND.play();
 				break;
 
-			case CONSTANTS.MOVE_CHECKMATE:
-			case CONSTANTS.MOVE_DRAW:
-			case CONSTANTS.END_TIME:
+			case MOVE_CHECKMATE:
+			case MOVE_DRAW:
+			case END_TIME:
 				END_SOUND.play();
 				break;
 		}
@@ -720,13 +720,13 @@ export class Game {
 		this.stopClocks();
 
 		switch (moveType) {
-			case CONSTANTS.MOVE_CHECKMATE:
+			case MOVE_CHECKMATE:
 				endGameMessage.textContent = this.turn === 1 ? `WHITE WON` : `BLACK WON`;
 				break;
-			case CONSTANTS.MOVE_DRAW:
+			case MOVE_DRAW:
 				endGameMessage.textContent = `DRAW`;
 				break;
-			case CONSTANTS.END_TIME:
+			case END_TIME:
 				endGameMessage.textContent = this.turn === 1 ? `BLACK WON` : `WHITE WON`;
 				break;
 		}
