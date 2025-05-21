@@ -1,13 +1,8 @@
-'use strict'
+'use strict';
 
-import { Pieces, PIECE_MAP, CASTLING_PIECES } from "./pieces.js";
-import { END_TIME, MOVE_CAPTURE, MOVE_CHECK, MOVE_CHECKMATE, MOVE_DRAW, MOVE_NORMAL } from "./constants.js";
-
-const MOVE_SOUND = new Audio('assets/sound/move.mp3');
-const CAPTURE_SOUND = new Audio('assets/sound/capture.mp3');
-const CHECK_SOUND = new Audio('assets/sound/check.mp3');
-const END_SOUND = new Audio('assets/sound/end.mp3');
-
+import { Pieces } from "./pieces.js";
+import { END_TIME, MOVE_CAPTURE, MOVE_CHECK, MOVE_CHECKMATE, MOVE_DRAW, MOVE_NORMAL, PIECE_MAP, CASTLING_PIECES } from "./constants.js";
+import { MOVE_SOUND, CAPTURE_SOUND, CHECK_SOUND, END_SOUND } from './sounds.js';
 
 export class Game {
 	constructor(minutes, increment) {

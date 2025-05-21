@@ -1,33 +1,6 @@
-'use strict'
+'use strict';
 
-export const PIECE_MAP = {
-	'1': `white_pawn`,
-	'2': `white_knight`,
-	'3': `white_bishop`,
-	'4': `white_rook`,
-	'5': `white_rook`,
-	'6': `white_rook`,
-	'7': `white_king`,
-	'8': `white_queen`,
-	'-1': `black_pawn`,
-	'-2': `black_knight`,
-	'-3': `black_bishop`,
-	'-4': `black_rook`,
-	'-5': `black_rook`,
-	'-6': `black_rook`,
-	'-7': `black_king`,
-	'-8': `black_queen`
-};
-
-export const CASTLING_PIECES = [4, -4, 5, -5, 7, -7];
-
-const MOVES = {
-	king: [[0, 1], [1, 0], [-1, -1], [-1, 1], [-1, 0], [1, -1], [1, 1], [0, -1]],
-	queen: [[1, 1], [1, -1], [-1, 1], [-1, -1], [1, 0], [0, 1], [-1, 0], [0, -1]],
-	rook: [[1, 0], [0, 1], [-1, 0], [0, -1]],
-	bishop: [[1, 1], [1, -1], [-1, 1], [-1, -1]],
-	knight: [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2]]
-};
+import { MOVES, PIECE_MAP } from "./constants.js";
 
 export class Pieces {
 
