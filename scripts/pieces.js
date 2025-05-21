@@ -1,6 +1,6 @@
 'use strict';
 
-import { MOVES, PIECE_MAP } from "./constants.js";
+import { MOVES, PIECE_MAP, EN_PASSANT_SQUARE } from "./constants.js";
 
 export class Pieces {
 
@@ -271,7 +271,7 @@ export class Pieces {
 		// Capture
 		[-1, 1].forEach(offset => {
 			const targetCol = col + offset;
-			addSquareIfValid(forwardMove, targetCol, this.opponentPieces.includes(board[forwardMove]?.[targetCol]) || board[forwardMove]?.[targetCol] == 9);
+			addSquareIfValid(forwardMove, targetCol, this.opponentPieces.includes(board[forwardMove]?.[targetCol]) || board[forwardMove]?.[targetCol] == EN_PASSANT_SQUARE);
 		});
 
 		return availableSquares;
@@ -417,7 +417,7 @@ export class Pieces {
 			for (let col = 0; col < board[row].length; col++) {
 				const posiblePiece = board[row][col];
 
-				if (this.opponentPieces.includes(posiblePiece) && posiblePiece !== 9) {
+				if (this.opponentPieces.includes(posiblePiece) && posiblePiece !== EN_PASSANT_SQUARE) {
 
 					opponentAttackedSquares.push(this.getPieceAvailableMoves(board, PIECE_MAP[posiblePiece.toString()], [row, col], undefined, true));
 

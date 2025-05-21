@@ -1,7 +1,7 @@
 'use strict';
 
 import { Pieces } from "./pieces.js";
-import { END_TIME, MOVE_CAPTURE, MOVE_CHECK, MOVE_CHECKMATE, MOVE_DRAW, MOVE_NORMAL, PIECE_MAP, CASTLING_PIECES } from "./constants.js";
+import { EN_PASSANT_SQUARE, END_TIME, MOVE_CAPTURE, MOVE_CHECK, MOVE_CHECKMATE, MOVE_DRAW, MOVE_NORMAL, PIECE_MAP, CASTLING_PIECES } from "./constants.js";
 import { MOVE_SOUND, CAPTURE_SOUND, CHECK_SOUND, END_SOUND } from './sounds.js';
 
 export class Game {
@@ -106,7 +106,7 @@ export class Game {
 		for (let row = 0; row < this.board.length; row++) {
 			for (let col = 0; col < this.board[row].length; col++) {
 				const piece = this.board[row][col];
-				if (piece !== 0 && piece !== 9) {
+				if (piece !== 0 && piece !== EN_PASSANT_SQUARE) {
 					const pieceImage = PIECE_MAP[piece.toString()] + `.png`;
 					const cellId = `square-${row}-${col}`;
 					const cell = document.getElementById(cellId);
@@ -627,7 +627,7 @@ export class Game {
 	}
 
 	executeMove(pieceRow, pieceCol, goToRow, goToCol) {
-		if (this.board[goToRow][goToCol] === 9) {
+		if (this.board[goToRow][goToCol] === EN_PASSANT_SQUARE) {
 			this.board[pieceRow][goToCol] = 0;
 		}
 		this.board[goToRow][goToCol] = this.board[pieceRow][pieceCol];
@@ -647,14 +647,14 @@ export class Game {
 		this.deleteEnPassantSquares();
 		if (Math.abs(this.board[goToRow][goToCol]) === 1 && Math.abs(goToRow - pieceRow) === 2) {
 			const enPassantRow = (pieceRow + goToRow) / 2;
-			this.board[enPassantRow][goToCol] = 9;
+			this.board[enPassantRow][goToCol] = EN_PASSANT_SQUARE;
 		}
 	}
 
 	deleteEnPassantSquares() {
 		for (let i = 0; i < this.board.length; i++) {
 			for (let j = 0; j < this.board[i].length; j++) {
-				if (this.board[i][j] === 9) {
+				if (this.board[i][j] === EN_PASSANT_SQUARE) {
 					this.board[i][j] = 0;
 				}
 			}
