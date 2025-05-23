@@ -1,7 +1,10 @@
 'use strict';
 
+import { Clock } from "./clock.js";
 import { Game } from "./game.js";
 
+let clock = null;
+let game = null;
 
 document.getElementById("start-button").addEventListener("click", () => {
 	showTimeControlOptions();
@@ -12,19 +15,19 @@ document.getElementById("exit-button").addEventListener("click", () => {
 	document.getElementById("game-container").style.display = "none";
 	document.getElementById('end-game-message').style.display = "none";
 
-	window.game?.stopClocks();
+	clock.stopClocks();
 });
 
 document.getElementById("restart-button").addEventListener("click", () => {
-    window.game?.restartGame();
+    game.restartGame();
 });
 
 document.getElementById("go-back-button").addEventListener("click", () => {
-    window.game?.goBackPosition();
+    game.goBackPosition();
 });
 
 document.getElementById("rotate-board-button").addEventListener("click", () => {
-    window.game?.rotateBoard();
+    game.rotateBoard();
 });
 
 document.querySelectorAll(".time-option").forEach(button => {
@@ -34,8 +37,10 @@ document.querySelectorAll(".time-option").forEach(button => {
 		document.getElementById("time-options-screen").style.display = "none";
 		document.getElementById("game-container").style.display = "block";
 
-		window.game = new Game(minutes, increment);
-		window.game.startGame();
+		clock = new Clock(minutes, increment);
+
+		game = new Game(clock);
+		game.startGame();
 	});
 });
 

@@ -5,7 +5,7 @@ import { EN_PASSANT_SQUARE, END_TIME, MOVE_CAPTURE, MOVE_CHECK, MOVE_CHECKMATE, 
 import { MOVE_SOUND, CAPTURE_SOUND, CHECK_SOUND, END_SOUND } from './sounds.js';
 
 export class Game {
-	constructor(minutes, increment) {
+	constructor(clock) {
 		this.turn = 1;
 
 		// PIECES :
@@ -74,11 +74,8 @@ export class Game {
 			black: { short: true, long: true }
 		};
 
-		this.timeControl = minutes;
-		this.incrementTime = increment;
-		this.blackTime = minutes * 60;
-		this.whiteTime = minutes * 60;
-
+		this.clock = clock;
+		
 		this.endGame = false;
 	}
 
@@ -93,8 +90,8 @@ export class Game {
 		});
 
 		this.renderBoard();
-		this.updateClocks();
-		this.startClock();
+		this.clock.updateClocks();
+		this.clock.startClock();
 	}
 
 	renderBoard() {
@@ -125,77 +122,6 @@ export class Game {
 
 
 
-	// CLOCK FUNCTIONS :
-	startClock() {
-		clearInterval(this.intervalId);
-
-		this.intervalId = setInterval(() => {
-			if (this.turn === 1) {
-				if (this.whiteTime > 0) {
-					this.whiteTime--;
-				} else {
-					clearInterval(this.intervalId);
-					this.makeMoveSound(END_TIME);
-					this.showEndGameMessage(END_TIME);
-				}
-			} else {
-				if (this.blackTime > 0) {
-					this.blackTime--;
-				} else {
-					clearInterval(this.intervalId);
-					this.makeMoveSound(END_TIME);
-					this.showEndGameMessage(END_TIME);
-				}
-			}
-			this.updateClocks();
-		}, 1000);
-	}
-
-	updateClocks() {
-		document.getElementById('black-clock').textContent = this.formatTime(this.blackTime);
-		document.getElementById('white-clock').textContent = this.formatTime(this.whiteTime);
-	}
-
-	stopClocks() {
-		clearInterval(this.intervalId);
-	}
-
-	rotateClocks(setInitialPosition = false) {
-		const clockContainer = document.querySelector('.chess-clock');
-		const whiteClock = document.getElementById('white-clock');
-		const blackClock = document.getElementById('black-clock');
-
-		if (whiteClock && blackClock && clockContainer) {
-
-			if (setInitialPosition) {
-				clockContainer.insertBefore(blackClock, whiteClock);
-			} else {
-
-				if (clockContainer.firstElementChild === blackClock) {
-					clockContainer.insertBefore(whiteClock, blackClock);
-				} else {
-					clockContainer.insertBefore(blackClock, whiteClock);
-				}
-			}
-		}
-	}
-
-	addIncrementTime() {
-		if (this.turn === 1) {
-			this.whiteTime += this.incrementTime;
-		} else {
-			this.blackTime += this.incrementTime;
-		}
-	}
-
-	formatTime(seconds) {
-		const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-		const secs = (seconds % 60).toString().padStart(2, '0');
-		return `${mins}:${secs}`;
-	}
-
-
-
 	// BUTTON FUNCTIONS :
 	restartGame() {
 		console.log(`CHESS GAME RESETED`);
@@ -206,7 +132,7 @@ export class Game {
 		// the restar-button we must close it
 		this.closePawnPromotionMenu();
 
-		this.rotateClocks(true);
+		this.clock.rotateClocks(true);
 
 		this.turn = 1;
 
@@ -238,14 +164,13 @@ export class Game {
 			black: { short: true, long: true }
 		};
 
-		this.blackTime = this.timeControl * 60;
-		this.whiteTime = this.timeControl * 60;
-		this.intervalId;
-
+		
 		this.endGame = false;
-
-		this.updateClocks();
-		this.startClock();
+		
+		
+		this.clock.stopClocks();
+		this.clock.restartClocks();
+		this.clock.startClock();
 		this.renderBoard();
 	}
 
@@ -267,6 +192,7 @@ export class Game {
 				this.board = lastState.board.map(row => [...row]);
 				this.turn = lastState.turn;
 				this.castlingRights = lastState.castlingRights;
+				this.clock.switchClockTurn();
 				this.renderBoard();
 			}
 		}
@@ -295,7 +221,7 @@ export class Game {
 			// Rotate all positions of the positionHistory object:
 			this.positionHistory.positions = this.positionHistory.positions.map(pos => rotateBoardMatrix(pos));
 
-			this.rotateClocks();
+			this.clock.rotateClocks();
 			this.rotatedBoard = !this.rotatedBoard;
 			this.renderBoard();
 
@@ -487,7 +413,8 @@ export class Game {
 		if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
 			this.showEndGameMessage(moveType)
 		}
-		this.addIncrementTime();
+		this.clock.addIncrementTime(this.turn);
+		this.clock.switchClockTurn();
 		this.switchTurn();
 	}
 
@@ -609,6 +536,7 @@ export class Game {
 				}
 
 				this.disableRotateBoardButton = false;
+				this.clock.switchClockTurn();
 				this.switchTurn();
 				this.renderBoard();
 			};
