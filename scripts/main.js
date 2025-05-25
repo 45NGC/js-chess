@@ -6,47 +6,65 @@ import { Game } from "./game.js";
 let clock = null;
 let game = null;
 
-document.getElementById("start-button").addEventListener("click", () => {
-	showTimeControlOptions();
-});
+const elements = {
+	startScreen: document.getElementById("start-screen"),
+	gameContainer: document.getElementById("game-container"),
+	timeOptionsScreen: document.getElementById("time-options-screen"),
+	endGameMessage: document.getElementById("end-game-message"),
+	startButton: document.getElementById("start-button"),
+	exitButton: document.getElementById("exit-button"),
+	restartButton: document.getElementById("restart-button"),
+	goBackButton: document.getElementById("go-back-button"),
+	rotateBoardButton: document.getElementById("rotate-board-button"),
+	timeOptionButtons: document.querySelectorAll(".time-option"),
+};
 
-document.getElementById("exit-button").addEventListener("click", () => {
-	document.getElementById("start-screen").style.display = "flex";
-	document.getElementById("game-container").style.display = "none";
-	document.getElementById('end-game-message').style.display = "none";
-
-	clock.stopClocks();
-});
-
-document.getElementById("restart-button").addEventListener("click", () => {
-    game.restartGame();
-});
-
-document.getElementById("go-back-button").addEventListener("click", () => {
-    game.goBackPosition();
-});
-
-document.getElementById("rotate-board-button").addEventListener("click", () => {
-    game.rotateBoard();
-});
-
-document.querySelectorAll(".time-option").forEach(button => {
-	button.addEventListener("click", () => {
-		const [minutes, increment] = button.dataset.time.split("|").map(Number);
-		
-		document.getElementById("time-options-screen").style.display = "none";
-		document.getElementById("game-container").style.display = "block";
-
-		clock = new Clock(minutes, increment);
-
-		game = new Game(clock);
-		game.startGame();
-	});
-});
-
-
-function showTimeControlOptions(){
-	document.getElementById("start-screen").style.display = "none";
-	document.getElementById("game-container").style.display = "none";
-	document.getElementById("time-options-screen").style.display = "block";
+function showElement(element) {
+	element.style.display = "block";
 }
+
+function hideElement(element) {
+	element.style.display = "none";
+}
+
+function showFlex(element) {
+	element.style.display = "flex";
+}
+
+function showTimeControlOptions() {
+	hideElement(elements.startScreen);
+	hideElement(elements.gameContainer);
+	showElement(elements.timeOptionsScreen);
+}
+
+function handleExit() {
+	showFlex(elements.startScreen);
+	hideElement(elements.gameContainer);
+	hideElement(elements.endGameMessage);
+	clock?.stopClocks();
+}
+
+function startGameWithTime(button) {
+	const [minutes, increment] = button.dataset.time.split("|").map(Number);
+
+	hideElement(elements.timeOptionsScreen);
+	showElement(elements.gameContainer);
+
+	clock = new Clock(minutes, increment);
+	game = new Game(clock);
+	game.startGame();
+}
+
+function init() {
+	elements.startButton.addEventListener("click", showTimeControlOptions);
+	elements.exitButton.addEventListener("click", handleExit);
+	elements.restartButton.addEventListener("click", () => game?.restartGame());
+	elements.goBackButton.addEventListener("click", () => game?.goBackPosition());
+	elements.rotateBoardButton.addEventListener("click", () => game?.rotateBoard());
+
+	elements.timeOptionButtons.forEach(button => {
+		button.addEventListener("click", () => startGameWithTime(button));
+	});
+}
+
+init();
