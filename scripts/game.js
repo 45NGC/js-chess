@@ -640,7 +640,7 @@ export class Game {
 		this.endGame = true;
 		this.disableGoBackPositionButton = true;
 		const endGameMessage = document.getElementById('end-game-message');
-		this.stopClocks();
+		this.clock.stopClocks();
 
 		switch (moveType) {
 			case MOVE_CHECKMATE:
