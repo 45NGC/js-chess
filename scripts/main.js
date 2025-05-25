@@ -6,11 +6,14 @@ import { Game } from "./game.js";
 let clock = null;
 let game = null;
 
-const elements = {
+const screenElements = {
 	startScreen: document.getElementById("start-screen"),
 	gameContainer: document.getElementById("game-container"),
 	timeOptionsScreen: document.getElementById("time-options-screen"),
 	endGameMessage: document.getElementById("end-game-message"),
+};
+
+const buttons = {
 	startButton: document.getElementById("start-button"),
 	exitButton: document.getElementById("exit-button"),
 	restartButton: document.getElementById("restart-button"),
@@ -32,23 +35,23 @@ function showFlex(element) {
 }
 
 function showTimeControlOptions() {
-	hideElement(elements.startScreen);
-	hideElement(elements.gameContainer);
-	showElement(elements.timeOptionsScreen);
+	hideElement(screenElements.startScreen);
+	hideElement(screenElements.gameContainer);
+	showElement(screenElements.timeOptionsScreen);
 }
 
 function handleExit() {
-	showFlex(elements.startScreen);
-	hideElement(elements.gameContainer);
-	hideElement(elements.endGameMessage);
+	showFlex(screenElements.startScreen);
+	hideElement(screenElements.gameContainer);
+	hideElement(screenElements.endGameMessage);
 	clock?.stopClocks();
 }
 
-function startGameWithTime(button) {
-	const [minutes, increment] = button.dataset.time.split("|").map(Number);
+function startGameWithTime(timeOptionButton) {
+	const [minutes, increment] = timeOptionButton.dataset.time.split("|").map(Number);
 
-	hideElement(elements.timeOptionsScreen);
-	showElement(elements.gameContainer);
+	hideElement(screenElements.timeOptionsScreen);
+	showElement(screenElements.gameContainer);
 
 	clock = new Clock(minutes, increment);
 	game = new Game(clock);
@@ -56,14 +59,14 @@ function startGameWithTime(button) {
 }
 
 function init() {
-	elements.startButton.addEventListener("click", showTimeControlOptions);
-	elements.exitButton.addEventListener("click", handleExit);
-	elements.restartButton.addEventListener("click", () => game?.restartGame());
-	elements.goBackButton.addEventListener("click", () => game?.goBackPosition());
-	elements.rotateBoardButton.addEventListener("click", () => game?.rotateBoard());
+	buttons.startButton.addEventListener("click", showTimeControlOptions);
+	buttons.exitButton.addEventListener("click", handleExit);
+	buttons.restartButton.addEventListener("click", () => game?.restartGame());
+	buttons.goBackButton.addEventListener("click", () => game?.goBackPosition());
+	buttons.rotateBoardButton.addEventListener("click", () => game?.rotateBoard());
 
-	elements.timeOptionButtons.forEach(button => {
-		button.addEventListener("click", () => startGameWithTime(button));
+	buttons.timeOptionButtons.forEach(timeOptionButton => {
+		timeOptionButton.addEventListener("click", () => startGameWithTime(timeOptionButton));
 	});
 }
 
