@@ -1,8 +1,9 @@
-import { Pieces } from '../scripts/pieces.js';
-import { EN_PASSANT_SQUARE } from '../scripts/constants.js';
+import { Pieces } from '../src/pieces.js';
+import { EN_PASSANT_SQUARE } from '../src/constants.js';
 
 describe('Pieces', () => {
 
+	//TODO: Create multiple board cases in the constants script for future tests
 	const emptyBoard = [
 		[-7, 0, 0, 0, 0, 0, 0, 0],
 		[0, 0, 0, 0, 0, 0, 0, 0],

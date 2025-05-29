@@ -1,4 +1,4 @@
-import { Clock } from "../scripts/clock";
+import { Clock } from "../src/clock.js";
 
 describe('Clock', () => {
   let clock;
