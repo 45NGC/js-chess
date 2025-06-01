@@ -28,6 +28,9 @@ export class Pieces {
 			: { square1: 1, square2: 2, square3: 3 };
 	}
 
+	//TODO: Refactor this function to have less parameters (create an object that contains squareImageId and square):
+	// Object 				-> moveInfo{board, squareImageId, square, castlingRights, getAttackedSquares}
+	// refactored function 	-> getPieceAvailableMoves(moveInfo)
 	getPieceAvailableMoves(board, squareImageId, square, castlingRights, getAttackedSquares) {
 
 		switch (squareImageId) {
