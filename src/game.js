@@ -473,6 +473,7 @@ export class Game {
 		];
 
 		this.disableRotateBoardButton = true;
+		this.disableGoBackPositionButton = true;
 
 		const existingMenu = document.getElementById("promotion-menu");
 		if (existingMenu) {
@@ -498,6 +499,7 @@ export class Game {
 			this.board[goToRow][goToCol] = goToSquareValue;
 			this.board[previousRow][previousCol] = piece > 0 ? 1 : -1;
 			this.disableRotateBoardButton = false;
+			this.disableGoBackPositionButton = false;
 
 			// Take the position of the position history:
 			this.positionHistory.positions.pop();
@@ -536,6 +538,8 @@ export class Game {
 				}
 
 				this.disableRotateBoardButton = false;
+				this.disableGoBackPositionButton = false;
+				this.clock.addIncrementTime(this.turn);
 				this.clock.switchClockTurn();
 				this.switchTurn();
 				this.renderBoard();
