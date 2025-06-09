@@ -626,8 +626,7 @@ export class Game {
 	}
 
 	showEndGameMessage(moveType) {
-		this.endGame = true;
-		this.disableGoBackPositionButton = true;
+		this.disablePieceMovement();
 		const endGameMessage = document.getElementById('end-game-message');
 		this.clock.stopClocks();
 
@@ -638,9 +637,6 @@ export class Game {
 			case MOVE_DRAW:
 				endGameMessage.textContent = `DRAW`;
 				break;
-			case END_TIME:
-				endGameMessage.textContent = this.turn === 1 ? `BLACK WON` : `WHITE WON`;
-				break;
 		}
 
 		endGameMessage.classList.remove('hidden');
@@ -648,6 +644,11 @@ export class Game {
 
 	switchTurn() {
 		this.turn = this.turn === 1 ? -1 : 1;
+	}
+
+	disablePieceMovement(){
+		this.endGame = true;
+		this.disableGoBackPositionButton = true;
 	}
 
 }

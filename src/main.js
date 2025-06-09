@@ -6,6 +6,10 @@ import { Game } from "./game.js";
 let clock = null;
 let game = null;
 
+document.addEventListener('timeFinished', () => {
+	game?.disablePieceMovement()
+});
+
 const screenElements = {
 	startScreen: document.getElementById("start-screen"),
 	gameContainer: document.getElementById("game-container"),

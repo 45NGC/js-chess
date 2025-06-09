@@ -1,5 +1,7 @@
 'use strict'
 
+import { END_SOUND } from "./sounds.js";
+
 export class Clock {
 
 	constructor(minutes, increment) {
@@ -20,16 +22,16 @@ export class Clock {
 					this.whiteTime--;
 				} else {
 					clearInterval(this.intervalId);
-					this.makeMoveSound(END_TIME);
-					this.showEndGameMessage(END_TIME);
+					END_SOUND.play();
+					this.finishTimeMessage()
 				}
 			} else {
 				if (this.blackTime > 0) {
 					this.blackTime--;
 				} else {
 					clearInterval(this.intervalId);
-					this.makeMoveSound(END_TIME);
-					this.showEndGameMessage(END_TIME);
+					END_SOUND.play();
+					this.finishTimeMessage()
 				}
 			}
 			this.updateClocks();
@@ -88,5 +90,16 @@ export class Clock {
 	switchClockTurn() {
 		this.turn = this.turn === 1 ? -1 : 1;
 	}
+
+	finishTimeMessage() {
+		const endGameMessage = document.getElementById('end-game-message');
+		this.stopClocks();
+
+		const endTimeEvent = new CustomEvent('timeFinished');
+		document.dispatchEvent(endTimeEvent);
+
+		endGameMessage.textContent = this.turn === 1 ? `BLACK WON` : `WHITE WON`;
+		endGameMessage.classList.remove('hidden');
+}
 
 }
