@@ -180,6 +180,64 @@ button {
 	padding: 20px;
 }
 
+.promotion-menu {
+	background: var(--color-promotion-bg);
+	padding: 10px;
+	border-radius: 5px;
+	box-shadow: 0px 4px 6px var(--color-promotion-shadow);
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	z-index: 3;
+}
+
+.promotion-header {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.cancel-btn {
+	background: var(--color-cancel-bg);
+	color: var(--color-text-light);
+	border: none;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	font-size: 20px;
+	font-weight: bold;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	line-height: 40px;
+	padding: 0;
+	transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.cancel-btn:hover {
+	transform: scale(1.2);
+	background: var(--color-cancel-hover);
+}
+
+.promotion-option {
+	background: none;
+	border: none;
+	cursor: pointer;
+	transition: transform 0.2s ease-in-out;
+}
+
+.promotion-option:hover {
+	transform: scale(1.1);
+}
+
+.promotion-img {
+	width: 50px;
+	height: 50px;
+}
+
 .chess-board {
 	display: grid;
 	grid-template-columns: repeat(8, 60px);
@@ -269,66 +327,4 @@ button {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 2;
-}
-
-.promotion-menu {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background: var(--color-promotion-bg);
-	padding: 10px;
-	border-radius: 5px;
-	box-shadow: 0px 4px 6px var(--color-promotion-shadow);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 10px;
-	z-index: 3;
-}
-
-.promotion-header {
-	width: 100%;
-	display: flex;
-	justify-content: center;
-}
-
-.cancel-btn {
-	background: var(--color-cancel-bg);
-	color: var(--color-text-light);
-	border: none;
-	border-radius: 50%;
-	width: 40px;
-	height: 40px;
-	font-size: 20px;
-	font-weight: bold;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-	line-height: 40px;
-	padding: 0;
-	transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
-}
-
-.cancel-btn:hover {
-	transform: scale(1.2);
-	background: var(--color-cancel-hover);
-}
-
-.promotion-option {
-	background: none;
-	border: none;
-	cursor: pointer;
-	transition: transform 0.2s ease-in-out;
-}
-
-.promotion-option:hover {
-	transform: scale(1.1);
-}
-
-.promotion-img {
-	width: 50px;
-	height: 50px;
 }

@@ -75,7 +75,7 @@ export class Game {
 		};
 
 		this.clock = clock;
-		
+
 		this.endGame = false;
 	}
 
@@ -164,10 +164,10 @@ export class Game {
 			black: { short: true, long: true }
 		};
 
-		
+
 		this.endGame = false;
-		
-		
+
+
 		this.clock.stopClocks();
 		this.clock.restartClocks();
 		this.clock.startClock();
@@ -463,39 +463,25 @@ export class Game {
 
 	}
 
-	promotePawn(goToRow, goToCol, previousRow, previousCol, goToSquareValue, piece, moveType) {
-		const color = piece > 0 ? "white" : "black";
-		const choices = [
-			{ name: "Queen", value: 8, img: `assets/pieces/${color}/${color}_queen.png` },
-			{ name: "Rook", value: 6, img: `assets/pieces/${color}/${color}_rook.png` },
-			{ name: "Bishop", value: 3, img: `assets/pieces/${color}/${color}_bishop.png` },
-			{ name: "Knight", value: 2, img: `assets/pieces/${color}/${color}_knight.png` }
-		];
+	updatePromotionImages() {
+		const images = document.querySelectorAll('#promotion-menu .promotion-img');
+		const color = this.turn === 1 ? 'white' : 'black';
 
+		images.forEach(img => {
+			const pieceName = img.alt.toLowerCase();
+			img.src = `assets/pieces/${color}/${color}_${pieceName}.png`;
+		});
+	}
+
+	promotePawn(goToRow, goToCol, previousRow, previousCol, goToSquareValue, piece, moveType) {
+		this.updatePromotionImages();
 		this.disableRotateBoardButton = true;
 		this.disableGoBackPositionButton = true;
+		this.showPawnPromotionMenu();
 
-		const existingMenu = document.getElementById("promotion-menu");
-		if (existingMenu) {
-			document.body.removeChild(existingMenu);
-		}
-
-		const promotionDiv = document.createElement("div");
-		promotionDiv.id = "promotion-menu";
-		promotionDiv.classList.add("promotion-menu");
-
-		const headerDiv = document.createElement("div");
-		headerDiv.classList.add("promotion-header");
-
-		const cancelButton = document.createElement("button");
-		cancelButton.innerText = "✖";
-		cancelButton.classList.add("cancel-btn");
-
-		cancelButton.onmouseover = () => cancelButton.classList.add("hover");
-		cancelButton.onmouseout = () => cancelButton.classList.remove("hover");
-
+		const cancelButton = document.getElementById("promotion-menu").querySelector('.cancel-btn');
 		cancelButton.onclick = () => {
-			document.body.removeChild(promotionDiv);
+			this.closePawnPromotionMenu();
 			this.board[goToRow][goToCol] = goToSquareValue;
 			this.board[previousRow][previousCol] = piece > 0 ? 1 : -1;
 			this.disableRotateBoardButton = false;
@@ -508,54 +494,53 @@ export class Game {
 			this.renderBoard();
 		};
 
-		headerDiv.appendChild(cancelButton);
-		promotionDiv.appendChild(headerDiv);
+		const options = document.querySelectorAll('#promotion-menu .promotion-option');
+		options.forEach(option => {
+			// Limpiar eventos previos
+			option.onmouseover = null;
+			option.onmouseout = null;
+			option.onclick = null;
 
-		choices.forEach(choice => {
-			const btn = document.createElement("button");
-			btn.classList.add("promotion-option");
+			// Añadir eventos hover
+			option.onmouseover = () => option.classList.add('hover');
+			option.onmouseout = () => option.classList.remove('hover');
 
-			const img = document.createElement("img");
-			img.src = choice.img;
-			img.alt = choice.name;
-			img.classList.add("promotion-img");
+			// Configurar evento click
+			option.onclick = () => {
+				const value = parseInt(option.getAttribute('data-value'));
 
-			btn.appendChild(img);
-
-			btn.onmouseover = () => btn.classList.add("hover");
-			btn.onmouseout = () => btn.classList.remove("hover");
-
-			btn.onclick = () => {
-				this.board[goToRow][goToCol] = piece > 0 ? choice.value : -choice.value;
-				document.body.removeChild(promotionDiv);
-
-				moveType = this.getGameStateWithMoveType(moveType);
-				this.makeMoveSound(moveType);
-
-				// End game control:
-				if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
-					this.showEndGameMessage(moveType)
-				}
-
-				this.disableRotateBoardButton = false;
-				this.disableGoBackPositionButton = false;
-				this.clock.addIncrementTime(this.turn);
-				this.clock.switchClockTurn();
-				this.switchTurn();
-				this.renderBoard();
+				this.handlePromotionChoice(value, moveType, goToRow, goToCol, piece);
 			};
-
-			promotionDiv.appendChild(btn);
 		});
+	}
 
-		document.body.appendChild(promotionDiv);
+	handlePromotionChoice(value, moveType, goToRow, goToCol, piece) {
+		this.board[goToRow][goToCol] = piece > 0 ? value : -value;
+		this.closePawnPromotionMenu();
+
+		moveType = this.getGameStateWithMoveType(moveType);
+		this.makeMoveSound(moveType);
+
+		if (moveType === MOVE_CHECKMATE || moveType === MOVE_DRAW) {
+			this.showEndGameMessage(moveType);
+		}
+
+		this.disableRotateBoardButton = false;
+		this.disableGoBackPositionButton = false;
+		this.clock.addIncrementTime(this.turn);
+		this.clock.switchClockTurn();
+		this.switchTurn();
+		this.renderBoard();
 	}
 
 	closePawnPromotionMenu() {
 		const promotionMenu = document.getElementById("promotion-menu");
-		if (promotionMenu) {
-			document.body.removeChild(promotionMenu);
-		}
+		promotionMenu.style.display = 'none';
+	}
+
+	showPawnPromotionMenu() {
+		const promotionMenu = document.getElementById("promotion-menu");
+		promotionMenu.style.display = 'flex';
 	}
 
 	executeMove(pieceRow, pieceCol, goToRow, goToCol) {
